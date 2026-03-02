@@ -13,6 +13,7 @@ import { useSpotify } from '../hooks/useSpotify';
 import TrackCard from '../components/TrackCard';
 import { SpotifyTrack } from '../types';
 import { getTracksWithClipsForCard, updateCardStatus, getNextPendingCard, getPendingCardCount } from '../db/database';
+import { colors } from '../constants/colors';
 
 interface Props {
   route: any;
@@ -160,7 +161,7 @@ export default function SongCandidatesScreen({
       {loading ? (
         <ActivityIndicator
           size="large"
-          color="#1DB954"
+          color={colors.spotifyGreen}
           style={{ marginTop: 40 }}
         />
       ) : results.length === 0 && searched ? (
@@ -194,22 +195,22 @@ export default function SongCandidatesScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.background,
     padding: 16,
   },
   cardInfo: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 14,
     borderRadius: 10,
     marginBottom: 12,
   },
   cardFront: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 16,
     fontWeight: '700',
   },
   cardBack: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 14,
     marginTop: 4,
   },
@@ -217,38 +218,38 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   searchInput: {
-    backgroundColor: '#2a2a2a',
-    color: '#fff',
+    backgroundColor: colors.surfaceLight,
+    color: colors.textPrimary,
     fontSize: 16,
     padding: 12,
     borderRadius: 8,
   },
   authMessage: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 16,
     textAlign: 'center',
     marginTop: 60,
   },
   noResults: {
-    color: '#727272',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: 40,
   },
   progressText: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 13,
     textAlign: 'center',
     marginBottom: 8,
   },
   skipButton: {
-    backgroundColor: '#535353',
+    backgroundColor: colors.buttonSecondary,
     padding: 12,
     borderRadius: 24,
     alignItems: 'center',
     marginBottom: 12,
   },
   skipButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '600',
     fontSize: 14,
   },

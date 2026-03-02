@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useSpotify } from '../hooks/useSpotify';
 import { getTrackForCard } from '../db/database';
+import { colors } from '../constants/colors';
 
 interface CardParam {
   id: number;
@@ -215,56 +216,56 @@ export default function PlaylistProgressScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.background,
     padding: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
   playlistName: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 22,
     fontWeight: '700',
     textAlign: 'center',
     marginBottom: 32,
   },
   statusText: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 16,
     marginBottom: 16,
   },
   progressBarBg: {
     width: '100%',
     height: 6,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: colors.surfaceLight,
     borderRadius: 3,
     overflow: 'hidden',
     marginBottom: 12,
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     borderRadius: 3,
   },
   skippedText: {
-    color: '#f39c12',
+    color: colors.warning,
     fontSize: 13,
     marginBottom: 8,
   },
   successText: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 24,
     textAlign: 'center',
   },
   errorText: {
-    color: '#e74c3c',
+    color: colors.danger,
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 24,
   },
   spotifyButton: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 30,
@@ -273,12 +274,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   spotifyButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '700',
   },
   doneButton: {
-    backgroundColor: '#535353',
+    backgroundColor: colors.buttonSecondary,
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 30,
@@ -286,7 +287,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   doneButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '600',
   },

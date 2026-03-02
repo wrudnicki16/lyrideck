@@ -11,6 +11,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import { insertDeck, insertCards, getAllDecks, deleteDeck } from '../db/database';
 import { parseApkg, ApkgResult } from '../utils/parseApkg';
+import { colors } from '../constants/colors';
 
 interface ParsedCard {
   front: string;
@@ -337,11 +338,11 @@ export default function DeckImportScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.background,
     padding: 16,
   },
   header: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 28,
     fontWeight: '800',
     textAlign: 'center',
@@ -349,31 +350,31 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   importButton: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
     marginBottom: 24,
   },
   importButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '700',
   },
   sectionTitle: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 12,
   },
   emptyText: {
-    color: '#727272',
+    color: colors.textMuted,
     fontSize: 14,
     textAlign: 'center',
     marginTop: 40,
   },
   deckCard: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 16,
     borderRadius: 10,
     marginBottom: 8,
@@ -382,38 +383,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   deckName: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '600',
     flex: 1,
   },
   deckInfo: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 14,
   },
   previewCard: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 12,
     borderRadius: 8,
     marginBottom: 6,
   },
   previewFront: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 14,
     fontWeight: '600',
   },
   previewBack: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 14,
     marginTop: 4,
   },
   previewTags: {
-    color: '#727272',
+    color: colors.textMuted,
     fontSize: 12,
     marginTop: 4,
   },
   moreText: {
-    color: '#727272',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: 8,
   },
@@ -427,29 +428,29 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
     borderRadius: 30,
-    backgroundColor: '#535353',
+    backgroundColor: colors.buttonSecondary,
     alignItems: 'center',
   },
   cancelText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '600',
   },
   confirmButton: {
     flex: 1,
     padding: 14,
     borderRadius: 30,
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     alignItems: 'center',
   },
   confirmText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '700',
   },
   disabled: {
     opacity: 0.5,
   },
   deckSelectRow: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 14,
     borderRadius: 10,
     marginBottom: 6,
@@ -462,11 +463,11 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: '#535353',
+    borderColor: colors.buttonSecondary,
     backgroundColor: 'transparent',
   },
   checkboxSelected: {
-    backgroundColor: '#1DB954',
-    borderColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
+    borderColor: colors.spotifyGreen,
   },
 });

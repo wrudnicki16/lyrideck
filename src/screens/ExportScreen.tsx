@@ -10,6 +10,7 @@ import {
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { getTimestampsByDeck } from '../db/database';
+import { colors } from '../constants/colors';
 
 interface ExportRow {
   front: string;
@@ -134,28 +135,28 @@ export default function ExportScreen({ route }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.background,
     padding: 16,
   },
   title: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 22,
     fontWeight: '700',
     marginBottom: 4,
   },
   subtitle: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 14,
     marginBottom: 20,
   },
   exportButton: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
   },
   exportButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '700',
   },
@@ -163,23 +164,23 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   row: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 12,
     borderRadius: 8,
     marginBottom: 6,
   },
   rowFront: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 14,
     fontWeight: '600',
   },
   rowTrack: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 13,
     marginTop: 4,
   },
   rowTime: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 12,
     marginTop: 2,
   },

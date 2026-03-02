@@ -8,6 +8,7 @@ import {
   Linking,
 } from 'react-native';
 import { SpotifyTrack } from '../types';
+import { colors } from '../constants/colors';
 
 interface Props {
   track: SpotifyTrack;
@@ -77,7 +78,7 @@ export default function TrackCard({ track, onSelect, clipCount }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 12,
     marginBottom: 10,
@@ -92,17 +93,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   trackName: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '700',
   },
   artistName: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 14,
     marginTop: 2,
   },
   albumName: {
-    color: '#727272',
+    color: colors.textMuted,
     fontSize: 12,
     marginTop: 2,
   },
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   openButton: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
@@ -120,12 +121,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   openButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '700',
     fontSize: 14,
   },
   selectButton: {
-    backgroundColor: '#535353',
+    backgroundColor: colors.buttonSecondary,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
@@ -133,12 +134,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   selectButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '700',
     fontSize: 14,
   },
   clipBadge: {
-    backgroundColor: '#1DB95433',
+    backgroundColor: colors.spotifyGreenTransparent,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -146,12 +147,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   clipBadgeText: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 12,
     fontWeight: '600',
   },
   attribution: {
-    color: '#535353',
+    color: colors.buttonSecondary,
     fontSize: 10,
     textAlign: 'center',
   },

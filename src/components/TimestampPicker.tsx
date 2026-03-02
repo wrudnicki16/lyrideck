@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import { colors } from '../constants/colors';
 
 interface Props {
   onSubmit: (ms: number, note: string) => void;
@@ -77,13 +78,13 @@ export default function TimestampPicker({ onSubmit, onCancel }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: colors.surfaceLight,
     borderRadius: 16,
     padding: 20,
     margin: 16,
   },
   title: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 18,
     fontWeight: '700',
     textAlign: 'center',
@@ -96,8 +97,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   timeInput: {
-    backgroundColor: '#1e1e1e',
-    color: '#fff',
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
     fontSize: 28,
     fontWeight: '700',
     width: 80,
@@ -106,14 +107,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   colon: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 28,
     fontWeight: '700',
     marginHorizontal: 8,
   },
   noteInput: {
-    backgroundColor: '#1e1e1e',
-    color: '#fff',
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
     fontSize: 14,
     padding: 12,
     borderRadius: 8,
@@ -127,22 +128,22 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
     borderRadius: 8,
-    backgroundColor: '#535353',
+    backgroundColor: colors.buttonSecondary,
     alignItems: 'center',
   },
   cancelText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '600',
   },
   submitButton: {
     flex: 1,
     padding: 14,
     borderRadius: 8,
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     alignItems: 'center',
   },
   submitText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '700',
   },
   disabled: {

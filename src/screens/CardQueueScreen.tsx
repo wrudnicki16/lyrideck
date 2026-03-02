@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getCardsByDeck, updateDeckSearchField, getTrackForCard, getNextPendingCard } from '../db/database';
+import { colors } from '../constants/colors';
 
 interface CardRow {
   id: number;
@@ -108,11 +109,11 @@ export default function CardQueueScreen({ route, navigation }: any) {
   const statusColor = (status: string) => {
     switch (status) {
       case 'matched':
-        return '#1DB954';
+        return colors.spotifyGreen;
       case 'skipped':
-        return '#727272';
+        return colors.textMuted;
       default:
-        return '#b3b3b3';
+        return colors.textSecondary;
     }
   };
 
@@ -350,7 +351,7 @@ export default function CardQueueScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.background,
     padding: 16,
   },
   headerRow: {
@@ -360,19 +361,19 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   title: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 22,
     fontWeight: '700',
     flex: 1,
   },
   exportButton: {
-    backgroundColor: '#535353',
+    backgroundColor: colors.buttonSecondary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
   },
   exportText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '600',
     fontSize: 13,
   },
@@ -388,7 +389,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   searchFieldLabel: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 13,
     fontWeight: '600',
   },
@@ -396,26 +397,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: colors.surfaceLight,
   },
   filterPillActive: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
   },
   filterPillText: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 13,
     fontWeight: '600',
   },
   filterPillTextActive: {
-    color: '#fff',
+    color: colors.textPrimary,
   },
   emptyText: {
-    color: '#727272',
+    color: colors.textMuted,
     textAlign: 'center',
     marginTop: 40,
   },
   cardItem: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 14,
     borderRadius: 10,
     marginBottom: 6,
@@ -426,12 +427,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardFront: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 15,
     fontWeight: '600',
   },
   cardBack: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 14,
     marginTop: 2,
   },
@@ -442,56 +443,56 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   playlistButton: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 8,
   },
   playlistButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '600',
     fontSize: 13,
   },
   matchButton: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: colors.danger,
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 8,
   },
   matchButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '600',
     fontSize: 13,
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: colors.modalOverlay,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
   },
   modalContent: {
-    backgroundColor: '#282828',
+    backgroundColor: colors.modal,
     borderRadius: 16,
     padding: 24,
     width: '100%',
     maxWidth: 340,
   },
   modalTitle: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 12,
   },
   modalBody: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 15,
     marginBottom: 8,
   },
   modalHint: {
-    color: '#727272',
+    color: colors.textMuted,
     fontSize: 13,
     marginBottom: 20,
     fontStyle: 'italic',
@@ -504,27 +505,27 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     borderRadius: 24,
-    backgroundColor: '#535353',
+    backgroundColor: colors.buttonSecondary,
     alignItems: 'center',
   },
   modalCancelText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '600',
   },
   modalConfirm: {
     flex: 1,
     padding: 12,
     borderRadius: 24,
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     alignItems: 'center',
   },
   modalConfirmText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontWeight: '700',
   },
   nameInput: {
-    backgroundColor: '#1e1e1e',
-    color: '#fff',
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
     fontSize: 16,
     padding: 14,
     borderRadius: 8,

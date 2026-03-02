@@ -21,6 +21,7 @@ import {
 } from '../db/database';
 import { CommonActions } from '@react-navigation/native';
 import * as Clipboard from 'expo-clipboard';
+import { colors } from '../constants/colors';
 
 interface TrackParam {
   id: string;
@@ -342,7 +343,7 @@ export default function CaptureScreen({
                   <Text style={styles.tsActionText}>Jump</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                  <Text style={[styles.tsActionText, { color: '#e74c3c' }]}>
+                  <Text style={[styles.tsActionText, { color: colors.danger }]}>
                     Del
                   </Text>
                 </TouchableOpacity>
@@ -362,7 +363,7 @@ export default function CaptureScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.background,
   },
   contentContainer: {
     padding: 16,
@@ -383,45 +384,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   trackName: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 18,
     fontWeight: '700',
   },
   artistName: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 14,
     marginTop: 4,
   },
   cardContext: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 12,
     borderRadius: 10,
     marginBottom: 16,
   },
   cardLabel: {
-    color: '#727272',
+    color: colors.textMuted,
     fontSize: 12,
     marginBottom: 4,
   },
   cardFront: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 14,
     fontWeight: '600',
   },
   cardBack: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 14,
     marginTop: 2,
   },
   openButton: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
     marginBottom: 10,
   },
   openButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '700',
   },
@@ -431,30 +432,30 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   captureButton: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: colors.danger,
     padding: 18,
     borderRadius: 30,
     alignItems: 'center',
   },
   captureButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 18,
     fontWeight: '800',
   },
   markZeroButton: {
-    backgroundColor: '#535353',
+    backgroundColor: colors.buttonSecondary,
     padding: 18,
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
   markZeroButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 14,
     fontWeight: '700',
   },
   statusText: {
-    color: '#f39c12',
+    color: colors.warning,
     fontSize: 13,
     textAlign: 'center',
     marginBottom: 8,
@@ -464,18 +465,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   manualLinkText: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 13,
     textDecorationLine: 'underline',
   },
   savedTitle: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 8,
   },
   tsItem: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     padding: 12,
     borderRadius: 8,
     marginBottom: 6,
@@ -486,17 +487,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tsTime: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 18,
     fontWeight: '700',
   },
   tsNote: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 13,
     marginTop: 2,
   },
   tsMode: {
-    color: '#535353',
+    color: colors.buttonSecondary,
     fontSize: 11,
     marginTop: 2,
   },
@@ -505,31 +506,31 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   tsActionText: {
-    color: '#1DB954',
+    color: colors.spotifyGreen,
     fontSize: 13,
     fontWeight: '600',
   },
   attribution: {
-    color: '#535353',
+    color: colors.buttonSecondary,
     fontSize: 10,
     textAlign: 'center',
     marginTop: 12,
   },
   progressText: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 13,
     textAlign: 'center',
     marginBottom: 8,
   },
   nextCardButton: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.spotifyGreen,
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
     marginBottom: 12,
   },
   nextCardButtonText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 16,
     fontWeight: '700',
   },
