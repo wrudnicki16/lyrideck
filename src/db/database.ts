@@ -103,12 +103,12 @@ export async function insertCards(
   cards: { front: string; back: string; tags: string }[]
 ): Promise<void> {
   const database = await getDatabase();
-  const stmt = await database.prepareAsync(
+  const insertSql = await database.prepareAsync(
     'INSERT INTO cards (deck_id, front, back, tags) VALUES ($deckId, $front, $back, $tags)'
   );
   try {
     for (const card of cards) {
-      await stmt.executeAsync({
+      await insertSql.executeAsync({
         $deckId: deckId,
         $front: card.front,
         $back: card.back,
@@ -116,7 +116,7 @@ export async function insertCards(
       });
     }
   } finally {
-    await stmt.finalizeAsync();
+    await insertSql.finalizeAsync();
   }
 }
 

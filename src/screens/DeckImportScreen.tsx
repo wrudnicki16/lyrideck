@@ -116,7 +116,7 @@ export default function DeckImportScreen({ navigation }: any) {
     }
   };
 
-  const toggleDeck = (id: number) => {
+  const toggleSelectDeck = (id: number) => {
     setSelectedDeckIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
@@ -246,7 +246,7 @@ export default function DeckImportScreen({ navigation }: any) {
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.deckSelectRow}
-                onPress={() => toggleDeck(item.id)}
+                onPress={() => toggleSelectDeck(item.id)}
               >
                 <View
                   style={[

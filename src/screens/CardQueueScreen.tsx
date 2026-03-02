@@ -42,9 +42,9 @@ export default function CardQueueScreen({ route, navigation }: any) {
 
   const displayedCards = lyricsOnly
     ? cards.filter((c) => {
-        const text = searchField === 'front' ? c.front : c.back;
-        return text.trim().split(/\s+/).length >= 3;
-      })
+      const text = searchField === 'front' ? c.front : c.back;
+      return text.trim().split(/\s+/).length >= 3;
+    })
     : cards;
 
   const handleCreatePlaylist = () => {
@@ -154,15 +154,15 @@ export default function CardQueueScreen({ route, navigation }: any) {
           <TouchableOpacity
             key={f.label}
             style={[
-              styles.filterChip,
-              filter === f.value && styles.filterChipActive,
+              styles.filterPill,
+              filter === f.value && styles.filterPillActive,
             ]}
             onPress={() => setFilter(f.value)}
           >
             <Text
               style={[
-                styles.filterChipText,
-                filter === f.value && styles.filterChipTextActive,
+                styles.filterPillText,
+                filter === f.value && styles.filterPillTextActive,
               ]}
             >
               {f.label}
@@ -175,15 +175,15 @@ export default function CardQueueScreen({ route, navigation }: any) {
         <Text style={styles.searchFieldLabel}>Search by:</Text>
         <TouchableOpacity
           style={[
-            styles.filterChip,
-            searchField === 'front' && styles.filterChipActive,
+            styles.filterPill,
+            searchField === 'front' && styles.filterPillActive,
           ]}
           onPress={toggleSearchField}
         >
           <Text
             style={[
-              styles.filterChipText,
-              searchField === 'front' && styles.filterChipTextActive,
+              styles.filterPillText,
+              searchField === 'front' && styles.filterPillTextActive,
             ]}
           >
             Front
@@ -191,15 +191,15 @@ export default function CardQueueScreen({ route, navigation }: any) {
         </TouchableOpacity>
         <TouchableOpacity
           style={[
-            styles.filterChip,
-            searchField === 'back' && styles.filterChipActive,
+            styles.filterPill,
+            searchField === 'back' && styles.filterPillActive,
           ]}
           onPress={toggleSearchField}
         >
           <Text
             style={[
-              styles.filterChipText,
-              searchField === 'back' && styles.filterChipTextActive,
+              styles.filterPillText,
+              searchField === 'back' && styles.filterPillTextActive,
             ]}
           >
             Back
@@ -207,15 +207,15 @@ export default function CardQueueScreen({ route, navigation }: any) {
         </TouchableOpacity>
         <TouchableOpacity
           style={[
-            styles.filterChip,
-            lyricsOnly && styles.filterChipActive,
+            styles.filterPill,
+            lyricsOnly && styles.filterPillActive,
           ]}
           onPress={() => setLyricsOnly(!lyricsOnly)}
         >
           <Text
             style={[
-              styles.filterChipText,
-              lyricsOnly && styles.filterChipTextActive,
+              styles.filterPillText,
+              lyricsOnly && styles.filterPillTextActive,
             ]}
           >
             Lyrics
@@ -392,21 +392,21 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
   },
-  filterChip: {
+  filterPill: {
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: 16,
     backgroundColor: '#2a2a2a',
   },
-  filterChipActive: {
+  filterPillActive: {
     backgroundColor: '#1DB954',
   },
-  filterChipText: {
+  filterPillText: {
     color: '#b3b3b3',
     fontSize: 13,
     fontWeight: '600',
   },
-  filterChipTextActive: {
+  filterPillTextActive: {
     color: '#fff',
   },
   emptyText: {
