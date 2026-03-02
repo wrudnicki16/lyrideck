@@ -12,20 +12,7 @@ import { File } from 'expo-file-system';
 import { insertDeck, insertCards, getAllDecks, deleteDeck } from '../db/database';
 import { parseApkg, ApkgResult } from '../utils/parseApkg';
 import { colors } from '../constants/colors';
-
-interface ParsedCard {
-  front: string;
-  back: string;
-  tags: string;
-}
-
-interface DeckRow {
-  id: number;
-  name: string;
-  imported_at: string;
-  card_count: number;
-  search_field: string | null;
-}
+import { ParsedCard, DeckRow } from '../types';
 
 function parseCSV(text: string): ParsedCard[] {
   const lines = text.trim().split('\n');

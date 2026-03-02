@@ -11,25 +11,8 @@ import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { getTimestampsByDeck } from '../db/database';
 import { colors } from '../constants/colors';
-
-interface ExportRow {
-  front: string;
-  back: string;
-  track_name: string;
-  artist_name: string;
-  progress_ms: number;
-  note: string;
-  capture_mode: string;
-  spotify_url: string;
-  captured_at: string;
-}
-
-function formatMs(ms: number): string {
-  const totalSec = Math.floor(ms / 1000);
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
+import { formatMs } from '../utils/formatMs';
+import { ExportRow } from '../types';
 
 export default function ExportScreen({ route }: any) {
   const { deckId, deckName } = route.params;

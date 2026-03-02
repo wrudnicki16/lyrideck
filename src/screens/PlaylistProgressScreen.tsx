@@ -4,19 +4,12 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Linking,
 } from 'react-native';
 import { useSpotify } from '../hooks/useSpotify';
 import { getTrackForCard } from '../db/database';
 import { colors } from '../constants/colors';
-
-interface CardParam {
-  id: number;
-  front: string;
-  back: string;
-  status: string;
-  searchText: string;
-}
+import { openSpotifyLink } from '../utils/openSpotifyLink';
+import { CardParam } from '../types';
 
 interface Props {
   route: any;
@@ -122,21 +115,8 @@ export default function PlaylistProgressScreen({
     setPhase('done');
   };
 
-  const openInSpotify = async () => {
-    if (!playlistUri && !playlistUrl) return;
-    try {
-      if (playlistUri) {
-        const supported = await Linking.canOpenURL(playlistUri);
-        if (supported) {
-          await Linking.openURL(playlistUri);
-          return;
-        }
-      }
-      if (playlistUrl) await Linking.openURL(playlistUrl);
-    } catch {
-      if (playlistUrl) await Linking.openURL(playlistUrl);
-    }
-  };
+  const handleOpenInSpotify = () =>
+    openSpotifyLink(playlistUri, playlistUrl);
 
   return (
     <View style={styles.container}>
@@ -178,7 +158,7 @@ export default function PlaylistProgressScreen({
               {skipped} card{skipped !== 1 ? 's' : ''} skipped (no results found)
             </Text>
           )}
-          <TouchableOpacity style={styles.spotifyButton} onPress={openInSpotify}>
+          <TouchableOpacity style={styles.spotifyButton} onPress={handleOpenInSpotify}>
             <Text style={styles.spotifyButtonText}>Open in Spotify</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -196,7 +176,7 @@ export default function PlaylistProgressScreen({
           {playlistUrl && (
             <TouchableOpacity
               style={styles.spotifyButton}
-              onPress={openInSpotify}
+              onPress={handleOpenInSpotify}
             >
               <Text style={styles.spotifyButtonText}>Open in Spotify</Text>
             </TouchableOpacity>

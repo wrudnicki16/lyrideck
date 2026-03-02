@@ -5,10 +5,10 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  Linking,
 } from 'react-native';
 import { SpotifyTrack } from '../types';
 import { colors } from '../constants/colors';
+import { openSpotifyLink } from '../utils/openSpotifyLink';
 
 interface Props {
   track: SpotifyTrack;
@@ -20,18 +20,8 @@ export default function TrackCard({ track, onSelect, clipCount }: Props) {
   const albumArt = track.album.images[1]?.url ?? track.album.images[0]?.url;
   const artists = track.artists.map((a) => a.name).join(', ');
 
-  const openInSpotify = async () => {
-    try {
-      const supported = await Linking.canOpenURL(track.uri);
-      if (supported) {
-        await Linking.openURL(track.uri);
-      } else {
-        await Linking.openURL(track.external_urls.spotify);
-      }
-    } catch {
-      await Linking.openURL(track.external_urls.spotify);
-    }
-  };
+  const handleOpenInSpotify = () =>
+    openSpotifyLink(track.uri, track.external_urls.spotify);
 
   return (
     <View style={styles.container}>
@@ -57,7 +47,7 @@ export default function TrackCard({ track, onSelect, clipCount }: Props) {
         </View>
       )}
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.openButton} onPress={openInSpotify}>
+        <TouchableOpacity style={styles.openButton} onPress={handleOpenInSpotify}>
           <Text style={styles.openButtonText}>Open</Text>
         </TouchableOpacity>
         {onSelect && (

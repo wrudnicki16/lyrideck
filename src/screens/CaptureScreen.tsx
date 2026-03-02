@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
-  Linking,
   Image,
 } from 'react-native';
 import { useSpotify } from '../hooks/useSpotify';
@@ -22,31 +21,9 @@ import {
 import { CommonActions } from '@react-navigation/native';
 import * as Clipboard from 'expo-clipboard';
 import { colors } from '../constants/colors';
-
-interface TrackParam {
-  id: string;
-  name: string;
-  artists: string;
-  albumArt: string;
-  spotifyUrl: string;
-  spotifyUri: string;
-  durationMs: number;
-}
-
-interface TimestampRow {
-  id: number;
-  progress_ms: number;
-  note: string;
-  capture_mode: string;
-  captured_at: string;
-}
-
-function formatMs(ms: number): string {
-  const totalSec = Math.floor(ms / 1000);
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
-  return `${m}:${s.toString().padStart(2, '0')}`;
-}
+import { formatMs } from '../utils/formatMs';
+import { openSpotifyLink } from '../utils/openSpotifyLink';
+import { TrackParam, TimestampRow } from '../types';
 
 interface Props {
   route: any;
@@ -142,18 +119,8 @@ export default function CaptureScreen({
     await saveTimestamp(ms, note, 'manual');
   };
 
-  const openInSpotify = async () => {
-    try {
-      const supported = await Linking.canOpenURL(track.spotifyUri);
-      if (supported) {
-        await Linking.openURL(track.spotifyUri);
-      } else {
-        await Linking.openURL(track.spotifyUrl);
-      }
-    } catch {
-      await Linking.openURL(track.spotifyUrl);
-    }
-  };
+  const handleOpenInSpotify = () =>
+    openSpotifyLink(track.spotifyUri, track.spotifyUrl);
 
   const copyTimestamp = async (ms: number) => {
     const formatted = formatMs(ms);
@@ -250,7 +217,7 @@ export default function CaptureScreen({
       </View>
 
       {/* Actions */}
-      <TouchableOpacity style={styles.openButton} onPress={openInSpotify}>
+      <TouchableOpacity style={styles.openButton} onPress={handleOpenInSpotify}>
         <Text style={styles.openButtonText}>Open in Spotify</Text>
       </TouchableOpacity>
 

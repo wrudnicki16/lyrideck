@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import { isLyrics } from '../utils/isLyrics';
 
 let db: SQLite.SQLiteDatabase;
 
@@ -276,7 +277,7 @@ export async function getNextPendingCard(
   );
   if (!lyricsOnly) return rows[0] ?? null;
   const field = searchField === 'front' ? 'front' : 'back';
-  return rows.find((r) => r[field].trim().split(/\s+/).length >= 3) ?? null;
+  return rows.find((r) => isLyrics(r[field])) ?? null;
 }
 
 export async function getPendingCardCount(
@@ -291,5 +292,5 @@ export async function getPendingCardCount(
   );
   if (!lyricsOnly) return rows.length;
   const field = searchField === 'front' ? 'front' : 'back';
-  return rows.filter((r) => r[field].trim().split(/\s+/).length >= 3).length;
+  return rows.filter((r) => isLyrics(r[field])).length;
 }

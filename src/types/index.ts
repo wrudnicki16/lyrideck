@@ -47,3 +47,65 @@ export interface PlaybackState {
   progress_ms: number;
   item: SpotifyTrack | null;
 }
+
+// --- DB row types used across screens ---
+
+export interface CardRow {
+  id: number;
+  front: string;
+  back: string;
+  tags: string;
+  status: string;
+}
+
+export interface DeckRow {
+  id: number;
+  name: string;
+  imported_at: string;
+  card_count: number;
+  search_field: string | null;
+}
+
+export interface TrackParam {
+  id: string;
+  name: string;
+  artists: string;
+  albumArt: string;
+  spotifyUrl: string;
+  spotifyUri: string;
+  durationMs: number;
+}
+
+export interface TimestampRow {
+  id: number;
+  progress_ms: number;
+  note: string;
+  capture_mode: string;
+  captured_at: string;
+}
+
+export interface ParsedCard {
+  front: string;
+  back: string;
+  tags: string;
+}
+
+export interface ExportRow {
+  front: string;
+  back: string;
+  track_name: string;
+  artist_name: string;
+  progress_ms: number;
+  note: string;
+  capture_mode: string;
+  spotify_url: string;
+  captured_at: string;
+}
+
+export interface CardParam {
+  id: number;
+  front: string;
+  back: string;
+  status: string;
+  searchText: string;
+}

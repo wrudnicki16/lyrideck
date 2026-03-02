@@ -5,21 +5,16 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  Modal,
   TextInput,
   Alert,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getCardsByDeck, updateDeckSearchField, getTrackForCard, getNextPendingCard } from '../db/database';
 import { colors } from '../constants/colors';
-
-interface CardRow {
-  id: number;
-  front: string;
-  back: string;
-  tags: string;
-  status: string;
-}
+import FilterPill from '../components/FilterPill';
+import ConfirmationModal from '../components/ConfirmationModal';
+import { isLyrics } from '../utils/isLyrics';
+import { CardRow } from '../types';
 
 export default function CardQueueScreen({ route, navigation }: any) {
   const { deckId, deckName, searchField: initialSearchField } = route.params;
@@ -44,7 +39,7 @@ export default function CardQueueScreen({ route, navigation }: any) {
   const displayedCards = lyricsOnly
     ? cards.filter((c) => {
       const text = searchField === 'front' ? c.front : c.back;
-      return text.trim().split(/\s+/).length >= 3;
+      return isLyrics(text);
     })
     : cards;
 
@@ -152,76 +147,20 @@ export default function CardQueueScreen({ route, navigation }: any) {
 
       <View style={styles.filterRow}>
         {filters.map((f) => (
-          <TouchableOpacity
+          <FilterPill
             key={f.label}
-            style={[
-              styles.filterPill,
-              filter === f.value && styles.filterPillActive,
-            ]}
+            label={f.label}
+            active={filter === f.value}
             onPress={() => setFilter(f.value)}
-          >
-            <Text
-              style={[
-                styles.filterPillText,
-                filter === f.value && styles.filterPillTextActive,
-              ]}
-            >
-              {f.label}
-            </Text>
-          </TouchableOpacity>
+          />
         ))}
       </View>
 
       <View style={styles.searchFieldRow}>
         <Text style={styles.searchFieldLabel}>Search by:</Text>
-        <TouchableOpacity
-          style={[
-            styles.filterPill,
-            searchField === 'front' && styles.filterPillActive,
-          ]}
-          onPress={toggleSearchField}
-        >
-          <Text
-            style={[
-              styles.filterPillText,
-              searchField === 'front' && styles.filterPillTextActive,
-            ]}
-          >
-            Front
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.filterPill,
-            searchField === 'back' && styles.filterPillActive,
-          ]}
-          onPress={toggleSearchField}
-        >
-          <Text
-            style={[
-              styles.filterPillText,
-              searchField === 'back' && styles.filterPillTextActive,
-            ]}
-          >
-            Back
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.filterPill,
-            lyricsOnly && styles.filterPillActive,
-          ]}
-          onPress={() => setLyricsOnly(!lyricsOnly)}
-        >
-          <Text
-            style={[
-              styles.filterPillText,
-              lyricsOnly && styles.filterPillTextActive,
-            ]}
-          >
-            Lyrics
-          </Text>
-        </TouchableOpacity>
+        <FilterPill label="Front" active={searchField === 'front'} onPress={toggleSearchField} />
+        <FilterPill label="Back" active={searchField === 'back'} onPress={toggleSearchField} />
+        <FilterPill label="Lyrics" active={lyricsOnly} onPress={() => setLyricsOnly(!lyricsOnly)} />
       </View>
 
       {displayedCards.length === 0 ? (
@@ -282,68 +221,40 @@ export default function CardQueueScreen({ route, navigation }: any) {
         />
       )}
 
-      {/* Confirmation modal */}
-      <Modal visible={showPlaylistModal} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Create Playlist</Text>
-            <Text style={styles.modalBody}>
-              Create a Spotify playlist from {displayedCards.length} card
-              {displayedCards.length !== 1 ? 's' : ''}?
-            </Text>
-            <Text style={styles.modalHint}>
-              Adjust your filters to change which songs are included.
-            </Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalCancel}
-                onPress={() => setShowPlaylistModal(false)}
-              >
-                <Text style={styles.modalCancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalConfirm}
-                onPress={handleConfirmPlaylist}
-              >
-                <Text style={styles.modalConfirmText}>Continue</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <ConfirmationModal
+        visible={showPlaylistModal}
+        title="Create Playlist"
+        onCancel={() => setShowPlaylistModal(false)}
+        onConfirm={handleConfirmPlaylist}
+        confirmLabel="Continue"
+      >
+        <Text style={styles.modalBody}>
+          Create a Spotify playlist from {displayedCards.length} card
+          {displayedCards.length !== 1 ? 's' : ''}?
+        </Text>
+        <Text style={styles.modalHint}>
+          Adjust your filters to change which songs are included.
+        </Text>
+      </ConfirmationModal>
 
-      {/* Playlist name modal */}
-      <Modal visible={showNameModal} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Playlist Name</Text>
-            <TextInput
-              style={styles.nameInput}
-              value={playlistName}
-              onChangeText={setPlaylistName}
-              placeholder="Enter playlist name"
-              placeholderTextColor="#666"
-              autoFocus
-              onSubmitEditing={handleSubmitPlaylistName}
-              returnKeyType="done"
-            />
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalCancel}
-                onPress={() => setShowNameModal(false)}
-              >
-                <Text style={styles.modalCancelText}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalConfirm}
-                onPress={handleSubmitPlaylistName}
-              >
-                <Text style={styles.modalConfirmText}>Create</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <ConfirmationModal
+        visible={showNameModal}
+        title="Playlist Name"
+        onCancel={() => setShowNameModal(false)}
+        onConfirm={handleSubmitPlaylistName}
+        confirmLabel="Create"
+      >
+        <TextInput
+          style={styles.nameInput}
+          value={playlistName}
+          onChangeText={setPlaylistName}
+          placeholder="Enter playlist name"
+          placeholderTextColor="#666"
+          autoFocus
+          onSubmitEditing={handleSubmitPlaylistName}
+          returnKeyType="done"
+        />
+      </ConfirmationModal>
     </View>
   );
 }
@@ -392,23 +303,6 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontSize: 13,
     fontWeight: '600',
-  },
-  filterPill: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: colors.surfaceLight,
-  },
-  filterPillActive: {
-    backgroundColor: colors.spotifyGreen,
-  },
-  filterPillText: {
-    color: colors.textSecondary,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  filterPillTextActive: {
-    color: colors.textPrimary,
   },
   emptyText: {
     color: colors.textMuted,
@@ -466,26 +360,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 13,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: colors.modalOverlay,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  modalContent: {
-    backgroundColor: colors.modal,
-    borderRadius: 16,
-    padding: 24,
-    width: '100%',
-    maxWidth: 340,
-  },
-  modalTitle: {
-    color: colors.textPrimary,
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 12,
-  },
   modalBody: {
     color: colors.textSecondary,
     fontSize: 15,
@@ -496,32 +370,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginBottom: 20,
     fontStyle: 'italic',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  modalCancel: {
-    flex: 1,
-    padding: 12,
-    borderRadius: 24,
-    backgroundColor: colors.buttonSecondary,
-    alignItems: 'center',
-  },
-  modalCancelText: {
-    color: colors.textPrimary,
-    fontWeight: '600',
-  },
-  modalConfirm: {
-    flex: 1,
-    padding: 12,
-    borderRadius: 24,
-    backgroundColor: colors.spotifyGreen,
-    alignItems: 'center',
-  },
-  modalConfirmText: {
-    color: colors.textPrimary,
-    fontWeight: '700',
   },
   nameInput: {
     backgroundColor: colors.surface,
