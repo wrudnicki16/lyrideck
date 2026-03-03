@@ -6,7 +6,7 @@ A React Native (Expo) app that bridges your Anki flashcard decks with Spotify. I
 
 ## Origin
 
-The idea started from a dream - I wanted an app like Duolingo that could teach languages and also have a section for catchy tunes that get words and phrases stuck in your head. Maybe that was a little too daunting of task for a single developer, so I thought about something more attainable I could do. That's when I wound up with the current idea I have - *Make an app that takes a flashcard deck like Anki and searches for songs that match the back of the card — whether it's a word or phrase — and submit the time in minutes/seconds of where it occurs.*
+The idea started from a dream - I wanted an app like Duolingo that could teach languages and also have a section for catchy tunes that get words and phrases stuck in your head to aid in retrieval. Maybe that was a little too daunting of task for a single developer, so I thought about something more attainable I could do. That's when I wound up with the current idea I have - *Make an app that takes a flashcard deck like Anki and searches for songs that match the back of the card — whether it's a word or phrase — and submit the time in minutes/seconds of where it occurs.*
 
 This I could do, with some intentional tradeoffs:
 
