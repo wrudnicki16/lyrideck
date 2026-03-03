@@ -1,0 +1,42 @@
+appId: host.exp.Exponent
+---
+# Journey 3d: Manage saved clips on CaptureScreen
+# Precondition: On CaptureScreen with at least one saved clip
+- launchApp
+
+# Navigate to CaptureScreen
+- tapOn:
+    text: "cards"
+    index: 0
+- tapOn: "Pending"
+- tapOn:
+    text: ".*"
+    index: 0
+- extendedWaitUntil:
+    visible: "Select"
+    timeout: 10000
+- tapOn:
+    text: "Select"
+    index: 0
+
+# Save a clip first
+- tapOn: "Mark at 0:00"
+- assertVisible: "Saved Clips"
+
+# Tap "Copy" on the clip
+- tapOn: "Copy"
+
+# Assert "Copied" alert
+- assertVisible: "Copied"
+- tapOn: "OK"
+
+# Tap "Del" on the clip
+- tapOn: "Del"
+
+# Assert delete confirmation
+- assertVisible: "Remove this timestamp?"
+- assertVisible: "Cancel"
+- assertVisible: "Delete"
+
+# Confirm deletion
+- tapOn: "Delete"

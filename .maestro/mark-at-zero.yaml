@@ -1,0 +1,30 @@
+appId: host.exp.Exponent
+---
+# Journey 3c: Mark timestamp at 0:00
+# Precondition: On CaptureScreen with a selected track
+- launchApp
+
+# Navigate to a deck → card → track → CaptureScreen
+- tapOn:
+    text: "cards"
+    index: 0
+- tapOn: "Pending"
+- tapOn:
+    text: ".*"
+    index: 0
+- extendedWaitUntil:
+    visible: "Select"
+    timeout: 10000
+- tapOn:
+    text: "Select"
+    index: 0
+
+# Assert on CaptureScreen
+- assertVisible: "Mark at 0:00"
+
+# Tap "Mark at 0:00"
+- tapOn: "Mark at 0:00"
+
+# Assert clip saved
+- assertVisible: "Saved Clips"
+- assertVisible: "0:00"

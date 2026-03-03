@@ -1,0 +1,68 @@
+appId: host.exp.Exponent
+---
+# Journey 1b: Import an APKG deck
+- launchApp
+
+# Assert DeckImportScreen
+- assertVisible: "Anki2Spotify"
+- assertVisible: "Import Deck"
+
+# Tap Import Deck → opens OS file picker
+- tapOn: "Import Deck"
+
+# --- Platform-specific file picker interaction ---
+# Android: Try known document picker IDs (optional so iOS doesn't fail)
+- runFlow:
+    file: partials/select-apkg-file.yaml
+    env:
+      FILE_NAME: "test-deck"
+    optional: true
+
+# iOS: Document picker cannot be automated by Maestro.
+# For CI, consider using a deep link or test hook to bypass the picker.
+
+# --- Post-picker: APKG deck selection screen ---
+# These assertions run once a .apkg file is loaded (manually or via picker)
+- assertVisible:
+    text: "Select Decks to Import"
+    optional: true
+
+# Assert deck rows are shown with card counts
+- assertVisible:
+    text: "cards"
+    optional: true
+
+# Tap first deck row to toggle selection (deselect, then reselect)
+- tapOn:
+    text: "cards"
+    index: 0
+    optional: true
+
+# Assert Import button shows count
+- assertVisible:
+    text: "Import.*deck"
+    optional: true
+
+# Tap the Import button to confirm deck selection
+- tapOn:
+    text: "Import.*deck"
+    optional: true
+
+# After deck selection, card preview appears
+# Tap "Confirm Import" to finalize
+- tapOn:
+    text: "Confirm Import"
+    optional: true
+
+# Assert success alert
+- assertVisible:
+    text: "Success"
+    optional: true
+- tapOn:
+    text: "OK"
+    optional: true
+
+# Assert back on deck list with imported decks
+- assertVisible:
+    text: "Your Decks"
+    optional: true

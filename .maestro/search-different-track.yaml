@@ -1,0 +1,40 @@
+appId: host.exp.Exponent
+---
+# Journey 3e: Search for a different track
+# Precondition: On CaptureScreen with a selected track
+- launchApp
+
+# Navigate to CaptureScreen
+- tapOn:
+    text: "cards"
+    index: 0
+- tapOn: "Pending"
+- tapOn:
+    text: ".*"
+    index: 0
+- extendedWaitUntil:
+    visible: "Select"
+    timeout: 10000
+- tapOn:
+    text: "Select"
+    index: 0
+
+# Assert on CaptureScreen
+- assertVisible: "Search for different track"
+
+# Tap "Search for different track"
+- tapOn: "Search for different track"
+
+# Assert back on SongCandidatesScreen
+- assertVisible: "Search Spotify..."
+
+# Modify search query
+- tapOn: "Search Spotify..."
+- clearInput
+- inputText: "different query"
+- pressKey: enter
+
+# Wait for new results
+- extendedWaitUntil:
+    visible: "Select"
+    timeout: 10000

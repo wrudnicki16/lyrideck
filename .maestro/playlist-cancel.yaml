@@ -1,0 +1,33 @@
+appId: host.exp.Exponent
+---
+# Journey 5b: Cancel playlist creation at each step
+# Precondition: Deck with cards exists
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Tap "Playlist" → first modal appears
+- tapOn: "Playlist"
+- assertVisible: "Create Playlist"
+
+# Cancel first modal
+- tapOn: "Cancel"
+
+# Assert modal dismissed — still on CardQueueScreen
+- assertVisible: "Playlist"
+
+# Tap "Playlist" again → Continue → name modal
+- tapOn: "Playlist"
+- tapOn: "Continue"
+
+# Assert name modal
+- assertVisible: "Playlist Name"
+
+# Cancel name modal
+- tapOn: "Cancel"
+
+# Assert modal dismissed — still on CardQueueScreen
+- assertVisible: "Playlist"

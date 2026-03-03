@@ -1,0 +1,23 @@
+appId: host.exp.Exponent
+---
+# Journey 6a: Export timestamps as CSV
+# Precondition: Deck with saved timestamps exists
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Tap "Export" button
+- tapOn: "Export"
+
+# Assert ExportScreen
+- assertVisible: "Export:"
+- assertVisible: "to export"
+
+# Tap "Export CSV"
+- tapOn: "Export CSV"
+
+# Note: Share sheet interaction is OS-level.
+# On success, the share sheet or a success alert appears.

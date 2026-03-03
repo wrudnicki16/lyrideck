@@ -1,0 +1,45 @@
+appId: host.exp.Exponent
+---
+# Journey 4a: Batch review mode (Match Cards)
+# Precondition: Deck with pending cards exists, Spotify connected
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Tap "Match Cards" to enter review mode
+- tapOn: "Match Cards"
+
+# Assert SongCandidatesScreen opens in review mode
+- assertVisible: "remaining"
+- assertVisible: "Search Spotify..."
+
+# Wait for results
+- extendedWaitUntil:
+    visible: "Select"
+    timeout: 10000
+
+# Select a track → CaptureScreen
+- tapOn:
+    text: "Select"
+    index: 0
+
+# Assert on CaptureScreen
+- assertVisible: "Open in Spotify"
+- assertVisible: "Mark at 0:00"
+
+# Mark a timestamp
+- tapOn: "Mark at 0:00"
+- assertVisible: "Saved Clips"
+
+# Assert "Next Card" button is visible in review mode
+- assertVisible: "Next Card"
+- assertVisible: "remaining"
+
+# Tap "Next Card" to advance to next pending card
+- tapOn: "Next Card"
+
+# Should auto-advance to next card's SongCandidatesScreen
+- assertVisible: "Search Spotify..."

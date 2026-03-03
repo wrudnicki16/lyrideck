@@ -1,0 +1,23 @@
+appId: host.exp.Exponent
+---
+# Journey 4b: Skip a card in review mode
+# Precondition: Deck with pending cards exists, Spotify connected
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Tap "Match Cards" to enter review mode
+- tapOn: "Match Cards"
+
+# Assert review mode with Skip button
+- assertVisible: "Skip"
+- assertVisible: "remaining"
+
+# Tap Skip to skip the current card
+- tapOn: "Skip"
+
+# Should auto-advance to next pending card
+- assertVisible: "Search Spotify..."

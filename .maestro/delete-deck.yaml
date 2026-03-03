@@ -1,0 +1,20 @@
+appId: host.exp.Exponent
+---
+# Journey 1c: Delete a deck
+# Precondition: At least one deck exists
+- launchApp
+
+- assertVisible: "Your Decks"
+
+# Long-press the first deck card to trigger delete confirmation
+- longPressOn:
+    text: "cards"
+    index: 0
+
+# Assert delete confirmation dialog
+- assertVisible: "Delete Deck"
+- assertVisible: "Cancel"
+- assertVisible: "Delete"
+
+# Confirm deletion
+- tapOn: "Delete"

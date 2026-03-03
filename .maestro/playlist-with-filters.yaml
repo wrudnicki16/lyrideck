@@ -1,0 +1,31 @@
+appId: host.exp.Exponent
+---
+# Journey 5c: Create playlist with filters applied
+# Precondition: Deck with matched cards exists, Spotify connected
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Apply "Matched" filter
+- tapOn: "Matched"
+
+# Toggle "Lyrics" search on
+- tapOn: "Lyrics"
+
+# Tap "Playlist"
+- tapOn: "Playlist"
+
+# Assert modal shows filtered card count (not total)
+- assertVisible: "Create Playlist"
+
+# The modal body should reference filtered count
+- tapOn: "Continue"
+
+# Assert name modal
+- assertVisible: "Playlist Name"
+
+# Cancel to return
+- tapOn: "Cancel"

@@ -1,0 +1,25 @@
+appId: host.exp.Exponent
+---
+# Journey 2c: Search field toggle on CardQueueScreen
+# Precondition: Navigate to CardQueueScreen with cards
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Assert search field section
+- assertVisible: "Search by:"
+
+# Tap Front pill
+- tapOn: "Front"
+
+# Tap Back pill
+- tapOn: "Back"
+
+# Tap Lyrics pill to toggle on
+- tapOn: "Lyrics"
+
+# Tap Lyrics pill again to toggle off
+- tapOn: "Lyrics"

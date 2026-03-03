@@ -11,6 +11,7 @@ interface FilterPillProps {
 export default function FilterPill({ label, active, onPress }: FilterPillProps) {
   return (
     <TouchableOpacity
+      testID="filter-pill"
       style={[styles.pill, active && styles.pillActive]}
       onPress={onPress}
     >

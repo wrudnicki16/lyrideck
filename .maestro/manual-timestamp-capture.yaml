@@ -1,0 +1,49 @@
+appId: host.exp.Exponent
+---
+# Journey 3b: Manual timestamp capture on CaptureScreen
+# Precondition: On CaptureScreen with a selected track
+- launchApp
+
+# Navigate to a deck → card → track → CaptureScreen
+- tapOn:
+    text: "cards"
+    index: 0
+- tapOn: "Pending"
+- tapOn:
+    text: ".*"
+    index: 0
+- extendedWaitUntil:
+    visible: "Select"
+    timeout: 10000
+- tapOn:
+    text: "Select"
+    index: 0
+
+# Assert on CaptureScreen
+- assertVisible: "Open in Spotify"
+
+# Tap "Enter time manually"
+- tapOn: "Enter time manually"
+
+# Assert TimestampPicker appears
+- assertVisible: "Enter Timestamp"
+
+# Enter minutes
+- tapOn: "mm"
+- inputText: "1"
+
+# Enter seconds
+- tapOn: "ss"
+- inputText: "30"
+
+# Enter a note
+- tapOn: "Note (e.g., chorus, verse 2)"
+- inputText: "chorus"
+
+# Tap Save
+- tapOn: "Save"
+
+# Assert saved clip appears
+- assertVisible: "Saved Clips"
+- assertVisible: "1:30"
+- assertVisible: "chorus"

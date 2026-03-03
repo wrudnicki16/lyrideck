@@ -1,0 +1,24 @@
+appId: host.exp.Exponent
+---
+# Journey 6b: Export with no timestamps
+# Precondition: Deck exists with no saved timestamps
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Tap "Export" button
+- tapOn: "Export"
+
+# Assert ExportScreen with zero timestamps
+- assertVisible: "0 timestamps to export"
+
+# Tap "Export CSV"
+- tapOn: "Export CSV"
+
+# Assert "Nothing to export" alert
+- assertVisible: "Nothing to export"
+- assertVisible: "No timestamps saved yet."
+- tapOn: "OK"

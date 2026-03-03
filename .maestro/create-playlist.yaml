@@ -1,0 +1,51 @@
+appId: host.exp.Exponent
+---
+# Journey 5a: Create a Spotify playlist
+# Precondition: Deck with matched cards exists, Spotify connected
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Tap "Playlist" button
+- tapOn: "Playlist"
+
+# Assert first confirmation modal
+- assertVisible: "Create Playlist"
+- assertVisible: "Adjust your filters to change which songs are included."
+
+# Tap "Continue"
+- tapOn: "Continue"
+
+# Assert playlist name modal
+- assertVisible: "Playlist Name"
+- assertVisible: "Enter playlist name"
+
+# Clear and type custom playlist name
+- tapOn: "Enter playlist name"
+- clearInput
+- inputText: "My Test Playlist"
+
+# Tap "Create"
+- tapOn: "Create"
+
+# Assert PlaylistProgressScreen
+- assertVisible: "My Test Playlist"
+- assertVisible: "Resolving tracks..."
+
+# Wait for completion
+- extendedWaitUntil:
+    visible: "Playlist created with"
+    timeout: 30000
+
+# Assert success state
+- assertVisible: "Open in Spotify"
+- assertVisible: "Back to Decks"
+
+# Tap "Back to Decks" to return
+- tapOn: "Back to Decks"
+
+# Assert back on DeckImportScreen
+- assertVisible: "Anki2Spotify"

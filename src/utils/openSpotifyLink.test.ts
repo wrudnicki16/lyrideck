@@ -1,21 +1,17 @@
-const mockCanOpenURL = jest.fn();
-const mockOpenURL = jest.fn();
-
-jest.mock('react-native', () => ({
-  Linking: {
-    canOpenURL: mockCanOpenURL,
-    openURL: mockOpenURL,
-  },
-}));
-
+import { Linking } from 'react-native';
 import { openSpotifyLink } from './openSpotifyLink';
 
-describe('openSpotifyLink', () => {
-  beforeEach(() => {
-    mockCanOpenURL.mockReset();
-    mockOpenURL.mockReset();
-  });
+const mockCanOpenURL = jest.fn<Promise<boolean>, [string]>();
+const mockOpenURL = jest.fn<Promise<string>, [string]>();
 
+beforeEach(() => {
+  mockCanOpenURL.mockReset().mockResolvedValue(false);
+  mockOpenURL.mockReset().mockResolvedValue('');
+  Linking.canOpenURL = mockCanOpenURL;
+  Linking.openURL = mockOpenURL;
+});
+
+describe('openSpotifyLink', () => {
   it('no-ops when both uri and url are null', async () => {
     await openSpotifyLink(null, null);
     expect(mockCanOpenURL).not.toHaveBeenCalled();
@@ -24,7 +20,6 @@ describe('openSpotifyLink', () => {
 
   it('opens URI when supported', async () => {
     mockCanOpenURL.mockResolvedValue(true);
-    mockOpenURL.mockResolvedValue(undefined);
 
     await openSpotifyLink('spotify:track:123', 'https://open.spotify.com/track/123');
 
@@ -34,7 +29,6 @@ describe('openSpotifyLink', () => {
 
   it('falls back to URL when URI is not supported', async () => {
     mockCanOpenURL.mockResolvedValue(false);
-    mockOpenURL.mockResolvedValue(undefined);
 
     await openSpotifyLink('spotify:track:123', 'https://open.spotify.com/track/123');
 
@@ -44,7 +38,6 @@ describe('openSpotifyLink', () => {
 
   it('falls back to URL when canOpenURL throws', async () => {
     mockCanOpenURL.mockRejectedValue(new Error('fail'));
-    mockOpenURL.mockResolvedValue(undefined);
 
     await openSpotifyLink('spotify:track:123', 'https://open.spotify.com/track/123');
 
@@ -52,8 +45,6 @@ describe('openSpotifyLink', () => {
   });
 
   it('opens URL directly when uri is null', async () => {
-    mockOpenURL.mockResolvedValue(undefined);
-
     await openSpotifyLink(null, 'https://open.spotify.com/track/123');
 
     expect(mockCanOpenURL).not.toHaveBeenCalled();
@@ -62,7 +53,6 @@ describe('openSpotifyLink', () => {
 
   it('tries URI only when url is null', async () => {
     mockCanOpenURL.mockResolvedValue(true);
-    mockOpenURL.mockResolvedValue(undefined);
 
     await openSpotifyLink('spotify:track:123', null);
 

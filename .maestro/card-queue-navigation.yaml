@@ -1,0 +1,23 @@
+appId: host.exp.Exponent
+---
+# Journey 2a: Navigate to CardQueueScreen
+# Precondition: At least one deck with cards exists
+- launchApp
+
+- assertVisible: "Your Decks"
+
+# Tap the first deck to navigate to CardQueueScreen
+- tapOn:
+    text: "cards"
+    index: 0
+
+# Assert CardQueueScreen elements
+- assertVisible: "Playlist"
+- assertVisible: "Match Cards"
+- assertVisible: "Export"
+
+# Assert filter pills are visible
+- assertVisible: "All"
+- assertVisible: "Pending"
+- assertVisible: "Matched"
+- assertVisible: "Skipped"

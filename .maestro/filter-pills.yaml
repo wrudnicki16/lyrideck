@@ -1,0 +1,25 @@
+appId: host.exp.Exponent
+---
+# Journey 2b: Filter pills on CardQueueScreen
+# Precondition: Navigate to CardQueueScreen with cards
+- launchApp
+
+# Navigate to first deck
+- tapOn:
+    text: "cards"
+    index: 0
+
+# All filter should be active by default
+- assertVisible: "All"
+
+# Tap Pending pill
+- tapOn: "Pending"
+
+# Tap Matched pill
+- tapOn: "Matched"
+
+# Tap Skipped pill
+- tapOn: "Skipped"
+
+# Tap All pill to reset
+- tapOn: "All"
