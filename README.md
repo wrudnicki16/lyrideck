@@ -6,9 +6,9 @@ A React Native (Expo) app that bridges your Anki flashcard decks with Spotify. I
 
 ## Origin
 
-The idea started from a simple question: *can I make an app that takes a flashcard deck like Anki and searches for songs that match the back of the card — whether it's a word or phrase — and submit the time in minutes/seconds of where it occurs?*
+The idea started from a dream - I wanted an app like Duolingo that could teach languages and also have a section for catchy tunes that get words and phrases stuck in your head. Maybe that was a little too daunting of task for a single developer, so I thought about something more attainable I could do. That's when I wound up with the current idea I have - *Make an app that takes a flashcard deck like Anki and searches for songs that match the back of the card — whether it's a word or phrase — and submit the time in minutes/seconds of where it occurs.*
 
-The answer is yes, with some intentional tradeoffs:
+This I could do, with some intentional tradeoffs:
 
 - **No lyrics in v1.** Spotify's public API doesn't expose lyrics or lyric timestamps (those are licensed from Musixmatch and not available to third-party apps). Rather than fight that constraint, the app trusts the user to listen and tap "Mark Timestamp" when they hear the match.
 - **Free + Premium.** Spotify's playback-control endpoints are Premium-only. The app reads playback state when available (auto-capture) and falls back to manual `mm:ss` entry when it isn't — so Free users are never blocked.
