@@ -1,12 +1,12 @@
+appId: host.exp.exponent
+---
 # Partial: Attempt to select a file from the Android document picker.
 # Uses optional steps for cross-platform compatibility — skipped on iOS.
 # Expects ${FILE_NAME} to be set by the calling flow (without extension).
+
+# The file should appear in Recent files after adb push + media scan.
+# Tap it directly by its title.
 - tapOn:
-    id: "com.google.android.documentsui:id/toolbar_menu_search"
-    optional: true
-- inputText:
-    text: "${FILE_NAME}"
-    optional: true
-- tapOn:
-    text: "${FILE_NAME}"
+    id: "android:id/title"
+    text: "${FILE_NAME}.apkg"
     optional: true

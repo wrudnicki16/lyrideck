@@ -1,7 +1,8 @@
-appId: host.exp.Exponent
+appId: host.exp.exponent
 ---
 # Journey 1b: Import an APKG deck
 - launchApp
+- openLink: "exp://10.0.2.2:8081"
 
 # Assert DeckImportScreen
 - assertVisible: "Anki2Spotify"
@@ -27,15 +28,17 @@ appId: host.exp.Exponent
     text: "Select Decks to Import"
     optional: true
 
-# Assert deck rows are shown with card counts
+# Assert deck rows are shown
 - assertVisible:
-    text: "cards"
+    text: "Spanish Vocabulary"
+    optional: true
+- assertVisible:
+    text: "Music Theory"
     optional: true
 
 # Tap first deck row to toggle selection (deselect, then reselect)
 - tapOn:
-    text: "cards"
-    index: 0
+    text: "Spanish Vocabulary"
     optional: true
 
 # Assert Import button shows count
