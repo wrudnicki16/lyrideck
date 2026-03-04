@@ -121,8 +121,24 @@ export function useSpotify(accessToken: string | null) {
     }
   };
 
+  const getTracksByIds = async (ids: string[]): Promise<SpotifyTrack[]> => {
+    if (!accessToken || ids.length === 0) return [];
+    try {
+      const res = await fetch(
+        `${SPOTIFY_API_BASE}/tracks?ids=${ids.join(',')}`,
+        { headers }
+      );
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.tracks?.filter(Boolean) ?? [];
+    } catch {
+      return [];
+    }
+  };
+
   return {
     searchTracks,
+    getTracksByIds,
     getPlaybackState,
     seekToPosition,
     playTrack,

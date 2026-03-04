@@ -27,7 +27,7 @@ export default function SongCandidatesScreen({
   accessToken,
 }: Props) {
   const { cardId, cardFront, cardBack, searchField, reviewMode, deckId, lyricsOnly } = route.params;
-  const { searchTracks } = useSpotify(accessToken);
+  const { searchTracks, getTracksByIds } = useSpotify(accessToken);
   const initialQuery = searchField === 'front' ? cardFront : cardBack;
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<SpotifyTrack[]>([]);
@@ -43,20 +43,19 @@ export default function SongCandidatesScreen({
   }, [cardId]);
 
   useEffect(() => {
-    if (accessToken && initialQuery) {
-      doSearch(initialQuery);
-    }
-  }, [accessToken]);
-
-  useEffect(() => {
-    getTracksWithClipsForCard(cardId).then((rows) => {
+    const init = async () => {
+      const rows = await getTracksWithClipsForCard(cardId);
       const map = new Map<string, number>();
       for (const row of rows) {
         map.set(row.track_id, row.clip_count);
       }
       setTracksWithClips(map);
-    });
-  }, [cardId]);
+      if (accessToken && initialQuery) {
+        await doSearch(initialQuery, map);
+      }
+    };
+    init();
+  }, [accessToken, cardId]);
 
   const reviewParams = reviewMode
     ? { reviewMode: true, deckId, lyricsOnly }
@@ -84,11 +83,22 @@ export default function SongCandidatesScreen({
     await advanceToNext();
   };
 
-  const doSearch = async (q: string) => {
+  const doSearch = async (q: string, clipsMap?: Map<string, number>) => {
     if (!q.trim()) return;
     setLoading(true);
     setSearched(true);
     const tracks = await searchTracks(q.trim());
+
+    // Fetch previously-saved tracks that aren't in search results
+    const savedTrackIds = Array.from((clipsMap ?? tracksWithClips).keys());
+    const missingIds = savedTrackIds.filter(
+      (id) => !tracks.some((t) => t.id === id)
+    );
+    if (missingIds.length > 0) {
+      const savedTracks = await getTracksByIds(missingIds);
+      tracks.unshift(...savedTracks);
+    }
+
     setResults(tracks);
     setLoading(false);
 
