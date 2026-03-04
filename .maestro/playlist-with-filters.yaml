@@ -3,6 +3,9 @@ appId: host.exp.exponent
 # Journey 5c: Create playlist with filters applied
 # Precondition: Deck with matched cards exists, Spotify connected
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
 
 # Navigate to first deck

@@ -3,7 +3,20 @@ appId: host.exp.exponent
 # Journey 4a: Batch review mode (Match Cards)
 # Precondition: Deck with pending cards exists, Spotify connected
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
+
+# Connect to Spotify (fails if not already authenticated)
+- tapOn: "Connect Spotify"
+- extendedWaitUntil:
+    visible: "Agree"
+    timeout: 5000
+    optional: true
+- tapOn:
+    text: "Agree"
+    optional: true
 
 # Navigate to first deck
 - tapOn:
@@ -14,7 +27,7 @@ appId: host.exp.exponent
 - tapOn: "Match Cards"
 
 # Assert SongCandidatesScreen opens in review mode
-- assertVisible: "remaining"
+- assertVisible: "^[0-9]+ cards? remaining"
 - assertVisible: "Search Spotify..."
 
 # Wait for results
@@ -37,7 +50,7 @@ appId: host.exp.exponent
 
 # Assert "Next Card" button is visible in review mode
 - assertVisible: "Next Card"
-- assertVisible: "remaining"
+- assertVisible: "^[0-9]+ cards? remaining"
 
 # Tap "Next Card" to advance to next pending card
 - tapOn: "Next Card"

@@ -2,6 +2,9 @@ appId: host.exp.exponent
 ---
 # Journey 1b: Import an APKG deck
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
 
 # Assert DeckImportScreen

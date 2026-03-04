@@ -3,6 +3,9 @@ appId: host.exp.exponent
 # Journey 1c: Delete a deck
 # Precondition: At least one deck exists
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
 
 - assertVisible: "Your Decks"

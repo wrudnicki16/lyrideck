@@ -3,6 +3,9 @@ appId: host.exp.exponent
 # Journey 6b: Export with no timestamps
 # Precondition: Deck exists with no saved timestamps
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
 
 # Navigate to first deck

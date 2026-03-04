@@ -2,6 +2,9 @@ appId: host.exp.exponent
 ---
 # Journey 1a: Import a CSV deck
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
 
 # Assert DeckImportScreen initial state

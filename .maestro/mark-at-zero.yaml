@@ -3,7 +3,20 @@ appId: host.exp.exponent
 # Journey 3c: Mark timestamp at 0:00
 # Precondition: On CaptureScreen with a selected track
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
+
+# Connect to Spotify (fails if not already authenticated)
+- tapOn: "Connect Spotify"
+- extendedWaitUntil:
+    visible: "Agree"
+    timeout: 5000
+    optional: true
+- tapOn:
+    text: "Agree"
+    optional: true
 
 # Navigate to a deck → card → track → CaptureScreen
 - tapOn:
@@ -12,7 +25,7 @@ appId: host.exp.exponent
 - tapOn: "Pending"
 - tapOn:
     text: ".*"
-    index: 0
+    index: -1
 - extendedWaitUntil:
     visible: "Select"
     timeout: 10000

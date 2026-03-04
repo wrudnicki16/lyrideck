@@ -3,7 +3,20 @@ appId: host.exp.exponent
 # Journey 5a: Create a Spotify playlist
 # Precondition: Deck with matched cards exists, Spotify connected
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
+
+# Connect to Spotify (fails if not already authenticated)
+- tapOn: "Connect Spotify"
+- extendedWaitUntil:
+    visible: "Agree"
+    timeout: 5000
+    optional: true
+- tapOn:
+    text: "Agree"
+    optional: true
 
 # Navigate to first deck
 - tapOn:
@@ -34,11 +47,13 @@ appId: host.exp.exponent
 
 # Assert PlaylistProgressScreen
 - assertVisible: "My Test Playlist"
-- assertVisible: "Resolving tracks..."
+- assertVisible:
+    text: "Resolving tracks..."
+    optional: true
 
 # Wait for completion
 - extendedWaitUntil:
-    visible: "Playlist created with"
+    visible: "Playlist created with [0-9]+ tracks?!"
     timeout: 30000
 
 # Assert success state

@@ -3,6 +3,9 @@ appId: host.exp.exponent
 # Journey 5b: Cancel playlist creation at each step
 # Precondition: Deck with cards exists
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
 
 # Navigate to first deck

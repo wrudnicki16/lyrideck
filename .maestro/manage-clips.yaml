@@ -3,7 +3,20 @@ appId: host.exp.exponent
 # Journey 3d: Manage saved clips on CaptureScreen
 # Precondition: On CaptureScreen with at least one saved clip
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
+
+# Connect to Spotify (fails if not already authenticated)
+- tapOn: "Connect Spotify"
+- extendedWaitUntil:
+    visible: "Agree"
+    timeout: 5000
+    optional: true
+- tapOn:
+    text: "Agree"
+    optional: true
 
 # Navigate to CaptureScreen
 - tapOn:
@@ -12,6 +25,7 @@ appId: host.exp.exponent
 - tapOn: "Pending"
 - tapOn:
     text: ".*"
+    index: -1
     index: 0
 - extendedWaitUntil:
     visible: "Select"

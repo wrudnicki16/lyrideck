@@ -3,6 +3,9 @@ appId: host.exp.exponent
 # Journey 7: Spotify authentication
 # Note: Full auth flow cannot be automated (requires Spotify credentials)
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
 
 # Assert app launches with DeckImportScreen

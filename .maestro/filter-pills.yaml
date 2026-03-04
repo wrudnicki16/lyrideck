@@ -3,6 +3,9 @@ appId: host.exp.exponent
 # Journey 2b: Filter pills on CardQueueScreen
 # Precondition: Navigate to CardQueueScreen with cards
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
 
 # Navigate to first deck

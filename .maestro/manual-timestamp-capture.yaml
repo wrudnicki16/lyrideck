@@ -3,7 +3,20 @@ appId: host.exp.exponent
 # Journey 3b: Manual timestamp capture on CaptureScreen
 # Precondition: On CaptureScreen with a selected track
 - launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 5000
 - openLink: "${EXPO_URL}"
+
+# Connect to Spotify (fails if not already authenticated)
+- tapOn: "Connect Spotify"
+- extendedWaitUntil:
+    visible: "Agree"
+    timeout: 5000
+    optional: true
+- tapOn:
+    text: "Agree"
+    optional: true
 
 # Navigate to a deck → card → track → CaptureScreen
 - tapOn:
@@ -12,7 +25,7 @@ appId: host.exp.exponent
 - tapOn: "Pending"
 - tapOn:
     text: ".*"
-    index: 0
+    index: -1
 - extendedWaitUntil:
     visible: "Select"
     timeout: 10000
@@ -41,8 +54,11 @@ appId: host.exp.exponent
 - tapOn: "Note (e.g., chorus, verse 2)"
 - inputText: "chorus"
 
-# Tap Save
+# Tap Save (twice — first may dismiss keyboard)
 - tapOn: "Save"
+- tapOn:
+    text: "Save"
+    optional: true
 
 # Assert saved clip appears
 - assertVisible: "Saved Clips"
