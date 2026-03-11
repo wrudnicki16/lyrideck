@@ -65,7 +65,15 @@ export default function SongCandidatesScreen({
     const next = await getNextPendingCard(deckId, cardId, searchField ?? 'back', !!lyricsOnly);
     if (!next) {
       Alert.alert('All done!', 'No more pending cards to process.', [
-        { text: 'OK', onPress: () => navigation.navigate('CardQueue') },
+        { text: 'OK', onPress: () => {
+            const state = navigation.getState();
+            const idx = state.routes.findIndex((r: any) => r.name === 'CardQueue');
+            if (idx >= 0) {
+              navigation.pop(state.routes.length - 1 - idx);
+            } else {
+              navigation.goBack();
+            }
+          }},
       ]);
       return;
     }

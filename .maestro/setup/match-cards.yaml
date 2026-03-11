@@ -66,21 +66,24 @@ appId: host.exp.exponent
     id: "mark-at-zero"
     optional: true
 
-# Card 3: advance and match
+# Card 3: advance and match or end of deck
 - tapOn:
     id: "next-card"
     optional: true
-- extendedWaitUntil:
-    visible: "Select"
-    timeout: 10000
-    optional: true
-- tapOn:
-    id: "select-track"
-    index: 0
-    optional: true
-- tapOn:
-    id: "mark-at-zero"
-    optional: true
+- runFlow:
+    when:
+      visible: "All done!"
+    commands:
+      - tapOn: "OK"
+- runFlow:
+    when:
+      visible: "Select"
+    commands:
+      - tapOn:
+        id: "select-track"
+        index: 0
+      - tapOn:
+        id: "mark-at-zero"
 
 # Go back to deck list
 - back
