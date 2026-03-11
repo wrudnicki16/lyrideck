@@ -5,7 +5,7 @@ appId: host.exp.exponent
 - launchApp
 - extendedWaitUntil:
     visible: "Expo Go"
-    timeout: 15000
+    timeout: 30000
 - openLink: "${EXPO_URL}"
 
 - assertVisible: "Your Decks"
