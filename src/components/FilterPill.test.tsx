@@ -15,7 +15,7 @@ describe('FilterPill', () => {
     const { getByTestId, getByText } = render(
       <FilterPill label="All" active={true} onPress={() => {}} />
     );
-    const pill = getByTestId('filter-pill');
+    const pill = getByTestId('filter-all');
     const text = getByText('All');
 
     const pillStyle = Array.isArray(pill.props.style)
@@ -33,7 +33,7 @@ describe('FilterPill', () => {
     const { getByTestId, getByText } = render(
       <FilterPill label="Matched" active={false} onPress={() => {}} />
     );
-    const pill = getByTestId('filter-pill');
+    const pill = getByTestId('filter-matched');
     const text = getByText('Matched');
 
     const pillStyle = Array.isArray(pill.props.style)
