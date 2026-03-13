@@ -34,8 +34,9 @@
       [
         "@sentry/react-native/expo",
         {
-          "organization": "YOUR_SENTRY_ORG",
-          "project": "YOUR_SENTRY_PROJECT"
+          "url": "https://sentry.io",
+          "organization": "wyatt-rudnicki",
+          "project": "anki2spotify-react-native"
         }
       ]
     ]

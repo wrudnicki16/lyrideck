@@ -13,7 +13,7 @@ import { useSpotifyAuth } from './src/hooks/useSpotifyAuth';
 import AppNavigator from './src/navigation/AppNavigator';
 
 Sentry.init({
-  dsn: '__YOUR_SENTRY_DSN__',
+  dsn: 'https://5e93b869492da52eba4b256550b89bb6@o4511033353306112.ingest.us.sentry.io/4511033356517376',
 
   // Disable ALL performance monitoring
   tracesSampleRate: 0,
