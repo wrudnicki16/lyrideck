@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   Image,
+  Linking,
 } from 'react-native';
 import { useSpotify } from '../hooks/useSpotify';
 import TimestampPicker from '../components/TimestampPicker';
@@ -207,7 +208,12 @@ export default function CaptureScreen({
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       {/* Track info */}
-      <View style={styles.trackHeader}>
+      <Pressable
+        style={styles.trackHeader}
+        onPress={() => Linking.openURL('spotify://')}
+        accessibilityLabel="Open in Spotify"
+        accessibilityRole="button"
+      >
         {track.albumArt ? (
           <Image
             source={{ uri: track.albumArt }}
@@ -220,7 +226,7 @@ export default function CaptureScreen({
           </Text>
           <Text style={styles.artistName}>{track.artists}</Text>
         </View>
-      </View>
+      </Pressable>
 
       {/* Card context */}
       <View style={styles.cardContext}>
@@ -230,8 +236,8 @@ export default function CaptureScreen({
       </View>
 
       {/* Actions */}
-      <Pressable style={styles.openButton} onPress={handleOpenInSpotify} accessibilityLabel="Open in Spotify" accessibilityRole="button" testID="open-in-spotify">
-        <Text style={styles.openButtonText}>Open in Spotify</Text>
+      <Pressable style={styles.openButton} onPress={handleOpenInSpotify} accessibilityLabel="Play in Spotify" accessibilityRole="button" testID="open-in-spotify">
+        <Text style={styles.openButtonText}>Play in Spotify</Text>
       </Pressable>
 
       <View style={styles.captureRow}>
@@ -352,7 +358,7 @@ export default function CaptureScreen({
       )}
 
       <Text style={styles.attribution}>
-        Content provided by Spotify. Tap "Open in Spotify" to listen.
+        Content provided by Spotify. Tap "Play in Spotify" to listen.
       </Text>
     </ScrollView>
   );

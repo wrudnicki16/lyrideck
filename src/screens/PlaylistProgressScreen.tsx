@@ -158,8 +158,8 @@ export default function PlaylistProgressScreen({
               {skipped} card{skipped !== 1 ? 's' : ''} skipped (no results found)
             </Text>
           )}
-          <Pressable style={styles.spotifyButton} onPress={handleOpenInSpotify} accessibilityLabel="Open in Spotify" accessibilityRole="button" testID="open-in-spotify">
-            <Text style={styles.spotifyButtonText}>Open in Spotify</Text>
+          <Pressable style={styles.spotifyButton} onPress={handleOpenInSpotify} accessibilityLabel="Play in Spotify" accessibilityRole="button" testID="open-in-spotify">
+            <Text style={styles.spotifyButtonText}>Play in Spotify</Text>
           </Pressable>
           <Pressable
             style={styles.doneButton}
@@ -180,11 +180,11 @@ export default function PlaylistProgressScreen({
             <Pressable
               style={styles.spotifyButton}
               onPress={handleOpenInSpotify}
-              accessibilityLabel="Open in Spotify"
+              accessibilityLabel="Play in Spotify"
               accessibilityRole="button"
               testID="open-in-spotify"
             >
-              <Text style={styles.spotifyButtonText}>Open in Spotify</Text>
+              <Text style={styles.spotifyButtonText}>Play in Spotify</Text>
             </Pressable>
           )}
           <Pressable

@@ -47,8 +47,8 @@ export default function TrackCard({ track, onSelect, clipCount }: Props) {
         </View>
       )}
       <View style={styles.actions}>
-        <Pressable style={styles.openButton} onPress={handleOpenInSpotify} accessibilityLabel="Open" accessibilityRole="button" testID="open-track">
-          <Text style={styles.openButtonText}>Open</Text>
+        <Pressable style={styles.openButton} onPress={handleOpenInSpotify} accessibilityLabel="Play" accessibilityRole="button" testID="open-track">
+          <Text style={styles.openButtonText}>Play</Text>
         </Pressable>
         {onSelect && (
           <Pressable
