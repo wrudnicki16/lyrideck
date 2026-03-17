@@ -1,0 +1,405 @@
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  TextInput,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+  Linking,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useSpotify } from '../hooks/useSpotify';
+import { getCardsByTrackId, searchCardsByText } from '../db/database';
+import { colors } from '../constants/colors';
+import { CardWithDeck, SpotifyTrack, TrackParam } from '../types';
+
+interface Props {
+  route: any;
+  navigation: any;
+  accessToken: string | null;
+}
+
+export default function TrackSearchResultsScreen({
+  route,
+  navigation,
+  accessToken,
+}: Props) {
+  const { deckId } = (route.params ?? {}) as { deckId?: number };
+  const { getPlaybackState, skipToNext, skipToPrevious } = useSpotify(accessToken);
+
+  const [loading, setLoading] = useState(true);
+  const [currentTrack, setCurrentTrack] = useState<SpotifyTrack | null>(null);
+  const [results, setResults] = useState<CardWithDeck[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showFallback, setShowFallback] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasContext, setHasContext] = useState(false);
+  const trackIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    fetchCurrentTrack();
+  }, []);
+
+  // Poll for track changes every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const state = await getPlaybackState();
+      if (!state?.item) return; // Ignore null responses (paused/inactive) — keep showing last track
+      const newTrackId = state.item.id;
+      setHasContext(state.context != null);
+      if (newTrackId !== trackIdRef.current) {
+        setCurrentTrack(state.item);
+        setError(null);
+        trackIdRef.current = newTrackId;
+        await searchByTrackId(state.item);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [deckId]);
+
+  const fetchCurrentTrack = async () => {
+    setLoading(true);
+    setError(null);
+    const state = await getPlaybackState();
+    if (!state?.item) {
+      setCurrentTrack(null);
+      setLoading(false);
+      setError('No track currently playing');
+      return;
+    }
+    setCurrentTrack(state.item);
+    trackIdRef.current = state.item.id;
+    setHasContext(state.context != null);
+    await searchByTrackId(state.item);
+  };
+
+  const searchByTrackId = async (track: SpotifyTrack) => {
+    const matches = await getCardsByTrackId(track.id);
+    if (matches.length > 0) {
+      setResults(sortResults(matches));
+      setShowFallback(false);
+    } else {
+      const trackName = track.name;
+      setSearchQuery(trackName);
+      setShowFallback(true);
+      await runTextSearch(trackName);
+    }
+    setLoading(false);
+  };
+
+  const runTextSearch = async (query: string) => {
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+    const matches = await searchCardsByText(query.trim());
+    setResults(sortResults(matches));
+  };
+
+  const sortResults = (cards: CardWithDeck[]): CardWithDeck[] => {
+    if (deckId == null) return cards;
+    return [...cards].sort((a, b) => {
+      if (a.deck_id === deckId && b.deck_id !== deckId) return -1;
+      if (b.deck_id === deckId && a.deck_id !== deckId) return 1;
+      return 0;
+    });
+  };
+
+  const handleSkip = async (direction: 'next' | 'previous') => {
+    const success = direction === 'next' ? await skipToNext() : await skipToPrevious();
+    if (!success) return;
+    // Wait briefly for Spotify to update, then fetch the new track
+    setTimeout(async () => {
+      const state = await getPlaybackState();
+      if (state?.item && state.item.id !== trackIdRef.current) {
+        setCurrentTrack(state.item);
+        trackIdRef.current = state.item.id;
+        setError(null);
+        await searchByTrackId(state.item);
+      }
+    }, 500);
+  };
+
+  const handleSubmitSearch = () => {
+    runTextSearch(searchQuery);
+  };
+
+  const buildTrackParam = (track: SpotifyTrack): TrackParam => ({
+    id: track.id,
+    name: track.name,
+    artists: track.artists.map((a) => a.name).join(', '),
+    albumArt: track.album.images?.[0]?.url ?? '',
+    spotifyUrl: track.external_urls.spotify,
+    spotifyUri: track.uri,
+    durationMs: track.duration_ms,
+  });
+
+  const handleSelectCard = (card: CardWithDeck) => {
+    if (!currentTrack) return;
+    navigation.navigate('Capture', {
+      cardId: card.card_id,
+      cardFront: card.front,
+      cardBack: card.back,
+      track: buildTrackParam(currentTrack),
+    });
+  };
+
+  const artistText = currentTrack
+    ? currentTrack.artists.map((a) => a.name).join(', ')
+    : '';
+  const albumArt = currentTrack?.album.images?.[0]?.url ?? '';
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={colors.spotifyGreen} />
+        <Text style={styles.loadingText}>Checking playback...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <Pressable
+          style={styles.retryButton}
+          onPress={fetchCurrentTrack}
+          accessibilityLabel="Retry"
+          accessibilityRole="button"
+          testID="retry-btn"
+        >
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      {/* Current track header with controls */}
+      <View style={styles.trackHeader}>
+        <Pressable
+          style={styles.skipButton}
+          onPress={hasContext ? () => handleSkip('previous') : undefined}
+          disabled={!hasContext}
+          accessibilityLabel="Previous track"
+          accessibilityRole="button"
+          testID="previous-track"
+        >
+          <Ionicons name="play-skip-back" size={22} color={hasContext ? colors.textPrimary : colors.textMuted} />
+        </Pressable>
+        <Pressable
+          style={styles.trackCenter}
+          onPress={() => Linking.openURL('spotify://')}
+          accessibilityLabel="Open in Spotify"
+          accessibilityRole="button"
+          testID="open-track-in-spotify"
+        >
+          {albumArt ? (
+            <Image source={{ uri: albumArt }} style={styles.albumArt} />
+          ) : null}
+          <View style={styles.trackInfo}>
+            <Text style={styles.trackName} numberOfLines={2}>
+              {currentTrack?.name}
+            </Text>
+            <Text style={styles.artistName}>{artistText}</Text>
+          </View>
+        </Pressable>
+        <Pressable
+          style={styles.skipButton}
+          onPress={hasContext ? () => handleSkip('next') : undefined}
+          disabled={!hasContext}
+          accessibilityLabel="Next track"
+          accessibilityRole="button"
+          testID="next-track"
+        >
+          <Ionicons name="play-skip-forward" size={22} color={hasContext ? colors.textPrimary : colors.textMuted} />
+        </Pressable>
+      </View>
+
+      {/* Fallback search input */}
+      {showFallback && (
+        <>
+          <Text style={styles.fallbackMessage}>
+            No saved matches for this track
+          </Text>
+          <TextInput
+            style={styles.searchInput}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onSubmitEditing={handleSubmitSearch}
+            placeholder="Search cards..."
+            placeholderTextColor={colors.textMuted}
+            returnKeyType="search"
+            autoCorrect={false}
+            testID="search-input"
+          />
+        </>
+      )}
+
+      {/* Results */}
+      {results.length === 0 ? (
+        <Text style={styles.noResults}>No matching cards found</Text>
+      ) : (
+        <FlatList
+          data={results}
+          keyExtractor={(item) => item.card_id.toString()}
+          renderItem={({ item }) => (
+            <Pressable
+              style={styles.cardItem}
+              onPress={() => handleSelectCard(item)}
+              accessibilityRole="button"
+              testID="result-card"
+            >
+              <View style={styles.cardContent}>
+                <Text style={styles.cardFront} numberOfLines={1}>
+                  {item.front}
+                </Text>
+                <Text style={styles.cardBack} numberOfLines={1}>
+                  {item.back}
+                </Text>
+                <Text style={styles.deckLabel}>{item.deck_name}</Text>
+              </View>
+              {item.clip_count > 0 && (
+                <View style={styles.clipBadge}>
+                  <Text style={styles.clipBadgeText}>
+                    {item.clip_count} clip{item.clip_count !== 1 ? 's' : ''}
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+          )}
+        />
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    padding: 16,
+  },
+  centered: {
+    flex: 1,
+    backgroundColor: colors.background,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  loadingText: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    marginTop: 12,
+  },
+  errorText: {
+    color: colors.textSecondary,
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  retryButton: {
+    backgroundColor: colors.spotifyGreen,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 20,
+  },
+  retryButtonText: {
+    color: colors.textPrimary,
+    fontWeight: '700',
+  },
+  trackHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  skipButton: {
+    padding: 8,
+  },
+  trackCenter: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  albumArt: {
+    width: 64,
+    height: 64,
+    borderRadius: 8,
+  },
+  trackInfo: {
+    flex: 1,
+    marginLeft: 12,
+    justifyContent: 'center',
+  },
+  trackName: {
+    color: colors.textPrimary,
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  artistName: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    marginTop: 4,
+  },
+  fallbackMessage: {
+    color: colors.textMuted,
+    fontSize: 13,
+    marginBottom: 8,
+  },
+  searchInput: {
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
+    fontSize: 16,
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  noResults: {
+    color: colors.textMuted,
+    textAlign: 'center',
+    marginTop: 40,
+    fontSize: 14,
+  },
+  cardItem: {
+    backgroundColor: colors.surface,
+    padding: 14,
+    borderRadius: 10,
+    marginBottom: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardContent: {
+    flex: 1,
+  },
+  cardFront: {
+    color: colors.spotifyGreen,
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  cardBack: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    marginTop: 2,
+  },
+  deckLabel: {
+    color: colors.textMuted,
+    fontSize: 12,
+    marginTop: 4,
+  },
+  clipBadge: {
+    backgroundColor: colors.spotifyGreenTransparent,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginLeft: 8,
+  },
+  clipBadgeText: {
+    color: colors.spotifyGreen,
+    fontSize: 11,
+    fontWeight: '600',
+  },
+});

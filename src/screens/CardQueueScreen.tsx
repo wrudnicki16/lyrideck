@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getCardsByDeck, updateDeckSearchField, getTrackForCard, getNextPendingCard } from '../db/database';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import FilterPill from '../components/FilterPill';
 import ConfirmationModal from '../components/ConfirmationModal';
@@ -123,6 +124,17 @@ export default function CardQueueScreen({ route, navigation }: any) {
     <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.title}>{deckName}</Text>
+        <Pressable
+          style={styles.nowPlayingButton}
+          onPress={() =>
+            navigation.navigate('TrackSearchResults', { deckId })
+          }
+          accessibilityLabel="Search Now Playing"
+          accessibilityRole="button"
+          testID="now-playing-btn"
+        >
+          <Ionicons name="musical-notes" size={16} color={colors.textPrimary} />
+        </Pressable>
         <Pressable
           style={styles.playlistButton}
           onPress={handleCreatePlaylist}
@@ -360,6 +372,13 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontWeight: '600',
     fontSize: 13,
+  },
+  nowPlayingButton: {
+    backgroundColor: colors.spotifyGreen,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
   },
   matchButton: {
     backgroundColor: colors.danger,

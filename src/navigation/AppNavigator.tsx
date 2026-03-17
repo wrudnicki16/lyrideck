@@ -6,6 +6,7 @@ import SongCandidatesScreen from '../screens/SongCandidatesScreen';
 import CaptureScreen from '../screens/CaptureScreen';
 import ExportScreen from '../screens/ExportScreen';
 import PlaylistProgressScreen from '../screens/PlaylistProgressScreen';
+import TrackSearchResultsScreen from '../screens/TrackSearchResultsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,14 @@ export default function AppNavigator({ accessToken }: Props) {
       >
         {(props: any) => (
           <PlaylistProgressScreen {...props} accessToken={accessToken} />
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="TrackSearchResults"
+        options={{ title: 'Now Playing' }}
+      >
+        {(props: any) => (
+          <TrackSearchResultsScreen {...props} accessToken={accessToken} />
         )}
       </Stack.Screen>
     </Stack.Navigator>

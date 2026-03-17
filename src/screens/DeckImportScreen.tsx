@@ -11,6 +11,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import { insertDeck, insertCards, getAllDecks, deleteDeck } from '../db/database';
 import { parseApkg, ApkgResult } from '../utils/parseApkg';
+import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { ParsedCard, DeckRow } from '../types';
 
@@ -185,7 +186,19 @@ export default function DeckImportScreen({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Anki2Spotify</Text>
+      <View style={styles.titleRow}>
+        <Text style={styles.header}>Anki2Spotify</Text>
+        <Pressable
+          style={styles.nowPlayingButton}
+          onPress={() => navigation.navigate('TrackSearchResults')}
+          accessibilityLabel="Search Now Playing"
+          accessibilityRole="button"
+          testID="now-playing-btn"
+        >
+          <Ionicons name="musical-notes" size={16} color={colors.textPrimary} style={{ marginRight: 6 }} />
+          <Text style={styles.nowPlayingText}>Now Playing</Text>
+        </Pressable>
+      </View>
 
       {preview.length === 0 && !apkgResult ? (
         <>
@@ -344,13 +357,30 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     padding: 16,
   },
+  titleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+    marginTop: 8,
+  },
   header: {
     color: colors.spotifyGreen,
     fontSize: 28,
     fontWeight: '800',
-    textAlign: 'center',
-    marginBottom: 24,
-    marginTop: 8,
+  },
+  nowPlayingButton: {
+    backgroundColor: colors.spotifyGreen,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  nowPlayingText: {
+    color: colors.textPrimary,
+    fontWeight: '600',
+    fontSize: 13,
   },
   importButton: {
     backgroundColor: colors.spotifyGreen,

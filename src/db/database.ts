@@ -1,4 +1,5 @@
 import * as SQLite from 'expo-sqlite';
+import { CardWithDeck } from '../types';
 import { isLyrics } from '../utils/isLyrics';
 
 let db: SQLite.SQLiteDatabase;
@@ -302,4 +303,41 @@ export async function getPendingCardCount(
   if (!lyricsOnly) return rows.length;
   const field = searchField === 'front' ? 'front' : 'back';
   return rows.filter((r) => isLyrics(r[field])).length;
+}
+
+// --- Track search queries ---
+
+export async function getCardsByTrackId(trackId: string): Promise<CardWithDeck[]> {
+  const database = await getDatabase();
+  return database.getAllAsync(
+    `SELECT c.id as card_id, c.front, c.back, c.status,
+            d.id as deck_id, d.name as deck_name,
+            COUNT(t.id) as clip_count
+     FROM timestamps t
+     JOIN cards c ON c.id = t.card_id
+     JOIN decks d ON d.id = c.deck_id
+     WHERE t.track_id = ?
+     GROUP BY c.id
+     ORDER BY clip_count DESC`,
+    trackId
+  ) as CardWithDeck[];
+}
+
+export async function searchCardsByText(query: string): Promise<CardWithDeck[]> {
+  const database = await getDatabase();
+  const pattern = `%${query}%`;
+  return database.getAllAsync(
+    `SELECT c.id as card_id, c.front, c.back, c.status,
+            d.id as deck_id, d.name as deck_name,
+            COALESCE(tc.clip_count, 0) as clip_count
+     FROM cards c
+     JOIN decks d ON d.id = c.deck_id
+     LEFT JOIN (
+       SELECT card_id, COUNT(*) as clip_count
+       FROM timestamps GROUP BY card_id
+     ) tc ON tc.card_id = c.id
+     WHERE c.front LIKE ? OR c.back LIKE ?
+     ORDER BY clip_count DESC, c.id`,
+    [pattern, pattern]
+  ) as CardWithDeck[];
 }

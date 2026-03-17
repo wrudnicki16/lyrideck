@@ -136,12 +136,40 @@ export function useSpotify(accessToken: string | null) {
     }
   };
 
+  const skipToNext = async (): Promise<boolean> => {
+    if (!accessToken) return false;
+    try {
+      const res = await fetch(`${SPOTIFY_API_BASE}/me/player/next`, {
+        method: 'POST',
+        headers,
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  };
+
+  const skipToPrevious = async (): Promise<boolean> => {
+    if (!accessToken) return false;
+    try {
+      const res = await fetch(`${SPOTIFY_API_BASE}/me/player/previous`, {
+        method: 'POST',
+        headers,
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  };
+
   return {
     searchTracks,
     getTracksByIds,
     getPlaybackState,
     seekToPosition,
     playTrack,
+    skipToNext,
+    skipToPrevious,
     createPlaylist,
     addTracksToPlaylist,
   };

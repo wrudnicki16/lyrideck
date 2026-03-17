@@ -46,6 +46,7 @@ export interface PlaybackState {
   is_playing: boolean;
   progress_ms: number;
   item: SpotifyTrack | null;
+  context: { type: string; uri: string } | null;
 }
 
 // --- DB row types used across screens ---
@@ -100,6 +101,16 @@ export interface ExportRow {
   capture_mode: string;
   spotify_url: string;
   captured_at: string;
+}
+
+export interface CardWithDeck {
+  card_id: number;
+  front: string;
+  back: string;
+  status: string;
+  deck_id: number;
+  deck_name: string;
+  clip_count: number;
 }
 
 export interface CardParam {
