@@ -65,6 +65,8 @@ export interface DeckRow {
   imported_at: string;
   card_count: number;
   search_field: string | null;
+  status_filter: string | null;
+  lyrics_only: number;
 }
 
 export interface TrackParam {

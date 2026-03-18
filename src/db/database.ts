@@ -58,6 +58,22 @@ async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {
     // Column already exists
   }
 
+  // Add filter and lyrics_only columns to existing decks tables
+  try {
+    await database.execAsync(
+      `ALTER TABLE decks ADD COLUMN status_filter TEXT DEFAULT NULL`
+    );
+  } catch (_) {
+    // Column already exists
+  }
+  try {
+    await database.execAsync(
+      `ALTER TABLE decks ADD COLUMN lyrics_only INTEGER DEFAULT 0`
+    );
+  } catch (_) {
+    // Column already exists
+  }
+
   // Card-track associations (from playlist generation)
   await database.execAsync(`
     CREATE TABLE IF NOT EXISTS card_tracks (
@@ -90,7 +106,7 @@ export async function insertDeck(name: string): Promise<number> {
 export async function getAllDecks(): Promise<any[]> {
   const database = await getDatabase();
   return database.getAllAsync(`
-    SELECT d.id, d.name, d.imported_at, d.search_field, COUNT(c.id) as card_count
+    SELECT d.id, d.name, d.imported_at, d.search_field, d.status_filter, d.lyrics_only, COUNT(c.id) as card_count
     FROM decks d
     LEFT JOIN cards c ON c.deck_id = d.id
     GROUP BY d.id
@@ -105,6 +121,28 @@ export async function updateDeckSearchField(
   const database = await getDatabase();
   await database.runAsync('UPDATE decks SET search_field = ? WHERE id = ?', [
     field,
+    deckId,
+  ]);
+}
+
+export async function updateDeckStatusFilter(
+  deckId: number,
+  filter: string | null
+): Promise<void> {
+  const database = await getDatabase();
+  await database.runAsync('UPDATE decks SET status_filter = ? WHERE id = ?', [
+    filter,
+    deckId,
+  ]);
+}
+
+export async function updateDeckLyricsOnly(
+  deckId: number,
+  lyricsOnly: boolean
+): Promise<void> {
+  const database = await getDatabase();
+  await database.runAsync('UPDATE decks SET lyrics_only = ? WHERE id = ?', [
+    lyricsOnly ? 1 : 0,
     deckId,
   ]);
 }

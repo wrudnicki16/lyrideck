@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import { insertDeck, insertCards, getAllDecks, deleteDeck } from '../db/database';
 import { parseApkg, ApkgResult } from '../utils/parseApkg';
+import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import { ParsedCard, DeckRow } from '../types';
@@ -58,9 +59,11 @@ export default function DeckImportScreen({ navigation }: any) {
     Array<{ deckName: string; cards: { front: string; back: string; tags: string }[] }>
   >([]);
 
-  useEffect(() => {
-    loadDecks();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadDecks();
+    }, [])
+  );
 
   const loadDecks = async () => {
     const d = await getAllDecks();
@@ -225,6 +228,8 @@ export default function DeckImportScreen({ navigation }: any) {
                       deckId: item.id,
                       deckName: item.name,
                       searchField: item.search_field ?? 'back',
+                      statusFilter: item.status_filter ?? null,
+                      lyricsOnly: !!item.lyrics_only,
                     })
                   }
                   onLongPress={() => handleDeleteDeck(item.id, item.name)}

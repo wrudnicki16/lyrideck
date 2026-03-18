@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { getCardsByDeck, updateDeckSearchField, getTrackForCard, getNextPendingCard } from '../db/database';
+import { getCardsByDeck, updateDeckSearchField, updateDeckStatusFilter, updateDeckLyricsOnly, getTrackForCard, getNextPendingCard } from '../db/database';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import FilterPill from '../components/FilterPill';
@@ -18,14 +18,14 @@ import { isLyrics } from '../utils/isLyrics';
 import { CardRow } from '../types';
 
 export default function CardQueueScreen({ route, navigation }: any) {
-  const { deckId, deckName, searchField: initialSearchField } = route.params;
+  const { deckId, deckName, searchField: initialSearchField, statusFilter: initialStatusFilter, lyricsOnly: initialLyricsOnly } = route.params;
   const [cards, setCards] = useState<CardRow[]>([]);
-  const [filter, setFilter] = useState<string | undefined>(undefined);
+  const [filter, setFilter] = useState<string | undefined>(initialStatusFilter ?? undefined);
   const [searchField, setSearchField] = useState<'front' | 'back'>(
     initialSearchField ?? 'back'
   );
 
-  const [lyricsOnly, setLyricsOnly] = useState(false);
+  const [lyricsOnly, setLyricsOnly] = useState(initialLyricsOnly ?? false);
 
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
@@ -35,6 +35,17 @@ export default function CardQueueScreen({ route, navigation }: any) {
     const next = searchField === 'back' ? 'front' : 'back';
     setSearchField(next);
     await updateDeckSearchField(deckId, next);
+  };
+
+  const handleSetFilter = async (value: string | undefined) => {
+    setFilter(value);
+    await updateDeckStatusFilter(deckId, value ?? null);
+  };
+
+  const handleToggleLyricsOnly = async () => {
+    const next = !lyricsOnly;
+    setLyricsOnly(next);
+    await updateDeckLyricsOnly(deckId, next);
   };
 
   const displayedCards = lyricsOnly
@@ -176,7 +187,7 @@ export default function CardQueueScreen({ route, navigation }: any) {
             key={f.label}
             label={f.label}
             active={filter === f.value}
-            onPress={() => setFilter(f.value)}
+            onPress={() => handleSetFilter(f.value)}
           />
         ))}
       </View>
@@ -185,7 +196,7 @@ export default function CardQueueScreen({ route, navigation }: any) {
         <Text style={styles.searchFieldLabel}>Search by:</Text>
         <FilterPill label="Front" active={searchField === 'front'} onPress={toggleSearchField} />
         <FilterPill label="Back" active={searchField === 'back'} onPress={toggleSearchField} />
-        <FilterPill label="Lyrics" active={lyricsOnly} onPress={() => setLyricsOnly(!lyricsOnly)} />
+        <FilterPill label="Lyrics" active={lyricsOnly} onPress={handleToggleLyricsOnly} />
       </View>
 
       {displayedCards.length === 0 ? (
