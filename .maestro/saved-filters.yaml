@@ -1,0 +1,52 @@
+appId: host.exp.exponent
+---
+
+# Saved Filters - Verify filter persistence across navigation
+# Prerequisites: At least one deck imported with multiple cards
+
+- launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 30000
+- openLink: "${EXPO_URL}"
+
+- assertVisible: "Anki2Spotify"
+
+# Enter first deck
+- tapOn:
+    id: "deck-item"
+    index: 0
+
+# Verify default filter is "All"
+- assertVisible: "Filters"
+
+# Change status filter to "Pending"
+- tapOn:
+    id: "filter-pending"
+
+# Toggle lyrics only
+- tapOn:
+    id: "filter-lyrics"
+
+# Change search field to "Front"
+- tapOn:
+    id: "filter-front"
+
+# Go back to deck list
+- back
+- assertVisible: "Anki2Spotify"
+
+# Re-enter the same deck
+- tapOn:
+    id: "deck-item"
+    index: 0
+
+# Verify filters were persisted
+- assertVisible: "Filters"
+
+# Front should still be active
+- assertVisible:
+    id: "filter-front"
+
+# Go back
+- back

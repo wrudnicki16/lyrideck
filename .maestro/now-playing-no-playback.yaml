@@ -1,0 +1,44 @@
+appId: host.exp.exponent
+---
+
+# Now Playing - No Playback State (retry flow)
+# Prerequisites: Spotify connected but NO song playing
+
+- launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 30000
+- openLink: "${EXPO_URL}"
+
+# Connect to Spotify (fails if not already authenticated)
+- tapOn:
+    id: "connect-spotify"
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    point: "50%,79%"
+    optional: true
+
+- assertVisible: "Anki2Spotify"
+
+# Navigate to Now Playing
+- tapOn:
+    id: "now-playing-btn"
+
+# Should show error state
+- assertVisible: "No track currently playing"
+- assertVisible:
+    id: "retry-btn"
+
+# Press retry
+- tapOn:
+    id: "retry-btn"
+
+# Should still show error (nothing playing) or resolve if started
+- assertVisible:
+    text: "No track currently playing"
+    optional: true
+
+# Go back
+- back
+- assertVisible: "Anki2Spotify"
