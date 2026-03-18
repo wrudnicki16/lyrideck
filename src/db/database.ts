@@ -57,6 +57,23 @@ async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {
   } catch (_) {
     // Column already exists
   }
+
+  // Card-track associations (from playlist generation)
+  await database.execAsync(`
+    CREATE TABLE IF NOT EXISTS card_tracks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      card_id INTEGER NOT NULL,
+      track_id TEXT NOT NULL,
+      track_name TEXT NOT NULL,
+      artist_name TEXT NOT NULL,
+      album_art TEXT DEFAULT '',
+      spotify_url TEXT NOT NULL,
+      spotify_uri TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE,
+      UNIQUE(card_id, track_id)
+    );
+  `);
 }
 
 // --- Deck operations ---
@@ -305,22 +322,52 @@ export async function getPendingCardCount(
   return rows.filter((r) => isLyrics(r[field])).length;
 }
 
+// --- Card-track associations ---
+
+export async function insertCardTrack(ct: {
+  cardId: number;
+  trackId: string;
+  trackName: string;
+  artistName: string;
+  albumArt: string;
+  spotifyUrl: string;
+  spotifyUri: string;
+}): Promise<void> {
+  const database = await getDatabase();
+  await database.runAsync(
+    `INSERT OR IGNORE INTO card_tracks (card_id, track_id, track_name, artist_name, album_art, spotify_url, spotify_uri)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [ct.cardId, ct.trackId, ct.trackName, ct.artistName, ct.albumArt, ct.spotifyUrl, ct.spotifyUri]
+  );
+}
+
 // --- Track search queries ---
 
 export async function getCardsByTrackId(trackId: string): Promise<CardWithDeck[]> {
   const database = await getDatabase();
   return database.getAllAsync(
-    `SELECT c.id as card_id, c.front, c.back, c.status,
-            d.id as deck_id, d.name as deck_name,
-            COUNT(t.id) as clip_count
-     FROM timestamps t
-     JOIN cards c ON c.id = t.card_id
-     JOIN decks d ON d.id = c.deck_id
-     WHERE t.track_id = ?
-     GROUP BY c.id
+    `SELECT card_id, front, back, status, deck_id, deck_name, clip_count FROM (
+       SELECT c.id as card_id, c.front, c.back, c.status,
+              d.id as deck_id, d.name as deck_name,
+              COUNT(t.id) as clip_count
+       FROM timestamps t
+       JOIN cards c ON c.id = t.card_id
+       JOIN decks d ON d.id = c.deck_id
+       WHERE t.track_id = ?
+       GROUP BY c.id
+       UNION
+       SELECT c.id as card_id, c.front, c.back, c.status,
+              d.id as deck_id, d.name as deck_name,
+              0 as clip_count
+       FROM card_tracks ct
+       JOIN cards c ON c.id = ct.card_id
+       JOIN decks d ON d.id = c.deck_id
+       WHERE ct.track_id = ?
+       AND c.id NOT IN (SELECT card_id FROM timestamps WHERE track_id = ?)
+     )
      ORDER BY clip_count DESC`,
-    trackId
-  ) as CardWithDeck[];
+    [trackId, trackId, trackId]
+  ) as Promise<CardWithDeck[]>;
 }
 
 export async function searchCardsByText(query: string): Promise<CardWithDeck[]> {
@@ -339,5 +386,5 @@ export async function searchCardsByText(query: string): Promise<CardWithDeck[]> 
      WHERE c.front LIKE ? OR c.back LIKE ?
      ORDER BY clip_count DESC, c.id`,
     [pattern, pattern]
-  ) as CardWithDeck[];
+  ) as Promise<CardWithDeck[]>;
 }

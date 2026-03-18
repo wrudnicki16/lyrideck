@@ -6,7 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useSpotify } from '../hooks/useSpotify';
-import { getTrackForCard } from '../db/database';
+import { getTrackForCard, insertCardTrack } from '../db/database';
 import { colors } from '../constants/colors';
 import { openSpotifyLink } from '../utils/openSpotifyLink';
 import { CardParam } from '../types';
@@ -68,7 +68,19 @@ export default function PlaylistProgressScreen({
 
       if (!uri) {
         const results = await searchTracks(card.searchText, 1);
-        uri = results[0]?.uri ?? null;
+        if (results[0]) {
+          const t = results[0];
+          uri = t.uri;
+          await insertCardTrack({
+            cardId: card.id,
+            trackId: t.id,
+            trackName: t.name,
+            artistName: t.artists.map((a) => a.name).join(', '),
+            albumArt: t.album.images?.[0]?.url ?? '',
+            spotifyUrl: t.external_urls.spotify,
+            spotifyUri: t.uri,
+          });
+        }
       }
 
       if (uri) {
