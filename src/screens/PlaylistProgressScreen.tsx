@@ -83,9 +83,9 @@ export default function PlaylistProgressScreen({
         }
       }
 
-      if (uri) {
+      if (uri && !uris.includes(uri)) {
         uris.push(uri);
-      } else {
+      } else if (!uri) {
         skippedCount++;
       }
 
