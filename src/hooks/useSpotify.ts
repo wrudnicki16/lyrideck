@@ -136,6 +136,32 @@ export function useSpotify(accessToken: string | null) {
     }
   };
 
+  const pausePlayback = async (): Promise<boolean> => {
+    if (!accessToken) return false;
+    try {
+      const res = await fetch(`${SPOTIFY_API_BASE}/me/player/pause`, {
+        method: 'PUT',
+        headers,
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  };
+
+  const resumePlayback = async (): Promise<boolean> => {
+    if (!accessToken) return false;
+    try {
+      const res = await fetch(`${SPOTIFY_API_BASE}/me/player/play`, {
+        method: 'PUT',
+        headers,
+      });
+      return res.ok;
+    } catch {
+      return false;
+    }
+  };
+
   const skipToNext = async (): Promise<boolean> => {
     if (!accessToken) return false;
     try {
@@ -168,6 +194,8 @@ export function useSpotify(accessToken: string | null) {
     getPlaybackState,
     seekToPosition,
     playTrack,
+    pausePlayback,
+    resumePlayback,
     skipToNext,
     skipToPrevious,
     createPlaylist,

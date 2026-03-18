@@ -9,6 +9,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Linking,
+  useWindowDimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSpotify } from '../hooks/useSpotify';
@@ -27,8 +28,10 @@ export default function TrackSearchResultsScreen({
   navigation,
   accessToken,
 }: Props) {
+  const { width: screenWidth } = useWindowDimensions();
+  const albumSize = Math.round(screenWidth * 2 / 3);
   const { deckId } = (route.params ?? {}) as { deckId?: number };
-  const { getPlaybackState, skipToNext, skipToPrevious } = useSpotify(accessToken);
+  const { getPlaybackState, skipToNext, skipToPrevious, pausePlayback, resumePlayback } = useSpotify(accessToken);
 
   const [loading, setLoading] = useState(true);
   const [currentTrack, setCurrentTrack] = useState<SpotifyTrack | null>(null);
@@ -37,6 +40,7 @@ export default function TrackSearchResultsScreen({
   const [showFallback, setShowFallback] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasContext, setHasContext] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const trackIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -50,6 +54,7 @@ export default function TrackSearchResultsScreen({
       if (!state?.item) return; // Ignore null responses (paused/inactive) — keep showing last track
       const newTrackId = state.item.id;
       setHasContext(state.context != null);
+      setIsPlaying(state.is_playing);
       if (newTrackId !== trackIdRef.current) {
         setCurrentTrack(state.item);
         setError(null);
@@ -73,6 +78,7 @@ export default function TrackSearchResultsScreen({
     setCurrentTrack(state.item);
     trackIdRef.current = state.item.id;
     setHasContext(state.context != null);
+    setIsPlaying(state.is_playing);
     await searchByTrackId(state.item);
   };
 
@@ -106,6 +112,11 @@ export default function TrackSearchResultsScreen({
       if (b.deck_id === deckId && a.deck_id !== deckId) return 1;
       return 0;
     });
+  };
+
+  const handlePlayPause = async () => {
+    const success = isPlaying ? await pausePlayback() : await resumePlayback();
+    if (success) setIsPlaying(!isPlaying);
   };
 
   const handleSkip = async (direction: 'next' | 'previous') => {
@@ -180,8 +191,25 @@ export default function TrackSearchResultsScreen({
 
   return (
     <View style={styles.container}>
-      {/* Current track header with controls */}
-      <View style={styles.trackHeader}>
+      {/* Current track info */}
+      <Pressable
+        style={styles.trackHeader}
+        onPress={() => Linking.openURL('spotify://')}
+        accessibilityLabel="Open in Spotify"
+        accessibilityRole="button"
+        testID="open-track-in-spotify"
+      >
+        {albumArt ? (
+          <Image source={{ uri: albumArt }} style={[styles.albumArt, { width: albumSize, height: albumSize }]} />
+        ) : null}
+        <Text style={styles.trackName} numberOfLines={2}>
+          {currentTrack?.name}
+        </Text>
+        <Text style={styles.artistName}>{artistText}</Text>
+      </Pressable>
+
+      {/* Playback controls */}
+      <View style={[styles.controlsRow, { width: albumSize }]}>
         <Pressable
           style={styles.skipButton}
           onPress={hasContext ? () => handleSkip('previous') : undefined}
@@ -190,24 +218,16 @@ export default function TrackSearchResultsScreen({
           accessibilityRole="button"
           testID="previous-track"
         >
-          <Ionicons name="play-skip-back" size={22} color={hasContext ? colors.textPrimary : colors.textMuted} />
+          <Ionicons name="play-skip-back" size={24} color={hasContext ? colors.textPrimary : colors.textMuted} />
         </Pressable>
         <Pressable
-          style={styles.trackCenter}
-          onPress={() => Linking.openURL('spotify://')}
-          accessibilityLabel="Open in Spotify"
+          style={styles.playPauseButton}
+          onPress={handlePlayPause}
+          accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
           accessibilityRole="button"
-          testID="open-track-in-spotify"
+          testID="play-pause"
         >
-          {albumArt ? (
-            <Image source={{ uri: albumArt }} style={styles.albumArt} />
-          ) : null}
-          <View style={styles.trackInfo}>
-            <Text style={styles.trackName} numberOfLines={2}>
-              {currentTrack?.name}
-            </Text>
-            <Text style={styles.artistName}>{artistText}</Text>
-          </View>
+          <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color={colors.textPrimary} />
         </Pressable>
         <Pressable
           style={styles.skipButton}
@@ -217,7 +237,7 @@ export default function TrackSearchResultsScreen({
           accessibilityRole="button"
           testID="next-track"
         >
-          <Ionicons name="play-skip-forward" size={22} color={hasContext ? colors.textPrimary : colors.textMuted} />
+          <Ionicons name="play-skip-forward" size={24} color={hasContext ? colors.textPrimary : colors.textMuted} />
         </Pressable>
       </View>
 
@@ -313,37 +333,39 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   trackHeader: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
-  skipButton: {
-    padding: 8,
-  },
-  trackCenter: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   albumArt: {
-    width: 64,
-    height: 64,
     borderRadius: 8,
-  },
-  trackInfo: {
-    flex: 1,
-    marginLeft: 12,
-    justifyContent: 'center',
+    marginBottom: 12,
   },
   trackName: {
     color: colors.textPrimary,
     fontSize: 18,
     fontWeight: '700',
+    textAlign: 'center',
   },
   artistName: {
     color: colors.textSecondary,
     fontSize: 14,
     marginTop: 4,
+    textAlign: 'center',
+  },
+  controlsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  skipButton: {
+    padding: 8,
+  },
+  playPauseButton: {
+    padding: 12,
+    backgroundColor: colors.surface,
+    borderRadius: 28,
   },
   fallbackMessage: {
     color: colors.textMuted,
