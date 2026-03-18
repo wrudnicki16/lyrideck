@@ -6,7 +6,7 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import { SafeAreaProvider, useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import { useSpotifyAuth } from './src/hooks/useSpotifyAuth';
@@ -49,7 +49,6 @@ function ErrorFallback() {
 
 function AppContent() {
   const { accessToken, isAuthenticated, login, logout, isReady } = useSpotifyAuth();
-  const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -75,7 +74,7 @@ function AppContent() {
           }}
         >
           {/* Spotify auth bar */}
-          <View style={[styles.authBar, { paddingTop: insets.top + 24 }]}>
+          <View style={styles.authBar}>
             {isAuthenticated ? (
               <View style={styles.authRow}>
                 <View style={styles.connectedDot} />
