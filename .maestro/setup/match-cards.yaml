@@ -29,10 +29,11 @@ appId: host.exp.exponent
     point: "50%,79%"
     optional: true
 
-# Navigate to first deck
+# Navigate to first deck if not already on it
 - tapOn:
     id: "deck-item"
     index: 0
+    optional: true
 
 # Enter review mode
 - tapOn:

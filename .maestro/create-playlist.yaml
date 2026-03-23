@@ -60,7 +60,7 @@ appId: host.exp.exponent
     timeout: 30000
 
 # Assert success state
-- assertVisible: "Open in Spotify"
+- assertVisible: "Play in Spotify"
 - assertVisible: "Back to Decks"
 
 # Tap "Back to Decks" to return
