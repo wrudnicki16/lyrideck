@@ -2,7 +2,7 @@ appId: host.exp.exponent
 ---
 
 # Playlist Creation Flow - Track saving and deduplication
-# Prerequisites: Spotify connected, at least one deck with cards
+# Prerequisites: Spotify connected, at least one deck with cards, non-emulator spotify client is open
 
 - launchApp
 - extendedWaitUntil:
@@ -82,35 +82,46 @@ appId: host.exp.exponent
     optional: true
 
 # Wait for the mini player bar to appear at the bottom
-- waitForAnimationToEnd:
+- extendedWaitUntil:
+    visible: 'Home'
     timeout: 3000
 
 # Tap the mini player bar to open full player view
 - tapOn:
-    point: "40%,88%"
+    point: "30%,86%"
     optional: true
 
 # Wait for full player to open
-- waitForAnimationToEnd:
-    timeout: 2000
+- extendedWaitUntil:
+    visible: '<Fake search wait>'
+    timeout: 3000
+    optional: true
 
 # Tap the devices icon (bottom-left of the player screen)
 - tapOn:
-    point: "10%,96%"
+    point: "8%,93%"
     optional: true
 
 # Wait for device picker to appear
-- waitForAnimationToEnd:
-    timeout: 2000
+- extendedWaitUntil:
+    visible: '<Fake search wait>'
+    timeout: 3000
+    optional: true
 
-# If device picker appears, pick the second device (first non-"This Web Browser" option)
+# If device picker appears, pick the second device (first non-"This Web Browser" option).
+- tapOn:
+    point: "50%,47%"
+    optional: true
+# In case there are three devices, this will pick the third.
 - tapOn:
     point: "50%,55%"
     optional: true
 
 # Wait for device to connect
-- waitForAnimationToEnd:
-    timeout: 2000
+- extendedWaitUntil:
+    visible: '<Fake search wait>'
+    timeout: 3000
+    optional: true
 
 # Close the device picker (X button top-left)
 - tapOn:
@@ -123,8 +134,10 @@ appId: host.exp.exponent
     optional: true
 
 # Wait for playback to start
-- waitForAnimationToEnd:
+- extendedWaitUntil:
+    visible: '<Fake search wait>'
     timeout: 3000
+    optional: true
 
 # Navigate back to the app
 - back
