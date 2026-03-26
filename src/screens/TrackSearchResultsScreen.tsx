@@ -166,7 +166,7 @@ export default function TrackSearchResultsScreen({
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.spotifyGreen} />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Checking playback...</Text>
       </View>
     );
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   retryButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 20,
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardFront: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 15,
     fontWeight: '600',
   },
@@ -413,14 +413,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   clipBadge: {
-    backgroundColor: colors.spotifyGreenTransparent,
+    backgroundColor: colors.primaryTransparent,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
     marginLeft: 8,
   },
   clipBadgeText: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 11,
     fontWeight: '600',
   },

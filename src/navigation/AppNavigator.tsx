@@ -15,10 +15,10 @@ interface Props {
 }
 
 const screenOptions = {
-  headerStyle: { backgroundColor: '#121212' },
+  headerStyle: { backgroundColor: '#060a18' },
   headerTintColor: '#fff',
   headerTitleStyle: { fontWeight: '700' as const },
-  contentStyle: { backgroundColor: '#121212' },
+  contentStyle: { backgroundColor: '#060a18' },
 };
 
 export default function AppNavigator({ accessToken }: Props) {

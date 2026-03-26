@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     borderRadius: 24,
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     alignItems: 'center',
   },
   confirmText: {

@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceLight,
   },
   pillActive: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
   },
   text: {
     color: colors.textSecondary,

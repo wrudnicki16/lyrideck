@@ -21,7 +21,7 @@ describe('FilterPill', () => {
     const pillStyle = Array.isArray(pill.props.style)
       ? Object.assign({}, ...pill.props.style.filter(Boolean))
       : pill.props.style;
-    expect(pillStyle.backgroundColor).toBe(colors.spotifyGreen);
+    expect(pillStyle.backgroundColor).toBe(colors.primary);
 
     const textStyle = Array.isArray(text.props.style)
       ? Object.assign({}, ...text.props.style.filter(Boolean))

@@ -138,7 +138,7 @@ export default function CaptureScreen({
       Alert.alert(
         'Cannot Jump',
         'Playback requires Spotify Premium and an active device. Scrub manually to ' +
-          formatMs(ms)
+        formatMs(ms)
       );
     }
   };
@@ -169,7 +169,8 @@ export default function CaptureScreen({
     const next = await getNextPendingCard(deckId!, cardId, (searchField as 'front' | 'back') ?? 'back', !!lyricsOnly);
     if (!next) {
       Alert.alert('All done!', 'No more pending cards to process.', [
-        { text: 'OK', onPress: () => {
+        {
+          text: 'OK', onPress: () => {
             const state = navigation.getState();
             const idx = state.routes.findIndex((r: any) => r.name === 'CardQueue');
             if (idx >= 0) {
@@ -177,7 +178,8 @@ export default function CaptureScreen({
             } else {
               navigation.goBack();
             }
-          }},
+          }
+        },
       ]);
       return;
     }
@@ -409,7 +411,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   cardFront: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -419,7 +421,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   openButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
@@ -491,7 +493,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tsTime: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 18,
     fontWeight: '700',
   },
@@ -501,7 +503,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   tsMode: {
-    color: colors.buttonSecondary,
+    color: colors.textMuted,
     fontSize: 11,
     marginTop: 2,
   },
@@ -510,12 +512,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   tsActionText: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 13,
     fontWeight: '600',
   },
   attribution: {
-    color: colors.buttonSecondary,
+    color: colors.textMuted,
     fontSize: 10,
     textAlign: 'center',
     marginTop: 12,
@@ -527,7 +529,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   nextCardButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',

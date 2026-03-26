@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   openButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   clipBadge: {
-    backgroundColor: colors.spotifyGreenTransparent,
+    backgroundColor: colors.primaryTransparent,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
@@ -140,12 +140,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   clipBadgeText: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 12,
     fontWeight: '600',
   },
   attribution: {
-    color: colors.buttonSecondary,
+    color: colors.textMuted,
     fontSize: 10,
     textAlign: 'center',
   },

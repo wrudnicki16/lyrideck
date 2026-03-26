@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     borderRadius: 3,
   },
   skippedText: {
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   successText: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 24,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   spotifyButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 30,

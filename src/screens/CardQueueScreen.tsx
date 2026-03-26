@@ -116,7 +116,7 @@ export default function CardQueueScreen({ route, navigation }: any) {
   const statusColor = (status: string) => {
     switch (status) {
       case 'matched':
-        return colors.spotifyGreen;
+        return colors.primary;
       case 'skipped':
         return colors.textMuted;
       default:
@@ -288,7 +288,7 @@ export default function CardQueueScreen({ route, navigation }: any) {
           value={playlistName}
           onChangeText={setPlaylistName}
           placeholder="Enter playlist name"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           autoFocus
           onSubmitEditing={handleSubmitPlaylistName}
           returnKeyType="done"
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardFront: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 15,
     fontWeight: '600',
   },
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   playlistButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   nowPlayingButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 20,

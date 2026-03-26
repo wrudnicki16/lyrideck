@@ -65,7 +65,8 @@ export default function SongCandidatesScreen({
     const next = await getNextPendingCard(deckId, cardId, searchField ?? 'back', !!lyricsOnly);
     if (!next) {
       Alert.alert('All done!', 'No more pending cards to process.', [
-        { text: 'OK', onPress: () => {
+        {
+          text: 'OK', onPress: () => {
             const state = navigation.getState();
             const idx = state.routes.findIndex((r: any) => r.name === 'CardQueue');
             if (idx >= 0) {
@@ -73,7 +74,8 @@ export default function SongCandidatesScreen({
             } else {
               navigation.goBack();
             }
-          }},
+          }
+        },
       ]);
       return;
     }
@@ -164,7 +166,7 @@ export default function SongCandidatesScreen({
           value={query}
           onChangeText={setQuery}
           placeholder="Search Spotify..."
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           onSubmitEditing={() => doSearch(query)}
           returnKeyType="search"
           testID="input-search"
@@ -180,7 +182,7 @@ export default function SongCandidatesScreen({
       {loading ? (
         <ActivityIndicator
           size="large"
-          color={colors.spotifyGreen}
+          color={colors.primary}
           style={{ marginTop: 40 }}
         />
       ) : results.length === 0 && searched ? (
@@ -224,7 +226,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardFront: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '700',
   },

@@ -370,12 +370,12 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   header: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 28,
     fontWeight: '800',
   },
   nowPlayingButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 14,
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   importButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   previewFront: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
   },
@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
     borderRadius: 30,
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     alignItems: 'center',
   },
   confirmText: {
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   checkboxSelected: {
-    backgroundColor: colors.spotifyGreen,
-    borderColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
 });

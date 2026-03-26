@@ -1,22 +1,22 @@
 export const colors = {
   // Backgrounds
-  background: '#121212',
-  surface: '#1e1e1e',
-  surfaceLight: '#2a2a2a',
-  modal: '#282828',
-  modalOverlay: 'rgba(0,0,0,0.7)',
+  background: '#060a18',
+  surface: '#0d122a',
+  surfaceLight: '#212b52',
+  modal: '#1a2038',
+  modalOverlay: 'rgba(5,8,20,0.75)',
 
   // Brand
-  spotifyGreen: '#1DB954',
-  spotifyGreenTransparent: '#1DB95433',
+  primary: '#4d7cff',
+  primaryTransparent: '#4d7cff33',
 
   // Text
   textPrimary: '#fff',
-  textSecondary: '#b3b3b3',
-  textMuted: '#727272',
+  textSecondary: '#a0aec0',
+  textMuted: '#5a6580',
 
   // Interactive
-  buttonSecondary: '#535353',
+  buttonSecondary: '#2a3352',
 
   // Status
   danger: '#e74c3c',

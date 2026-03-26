@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   exportButton: {
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   rowFront: {
-    color: colors.spotifyGreen,
+    color: colors.primary,
     fontSize: 14,
     fontWeight: '600',
   },

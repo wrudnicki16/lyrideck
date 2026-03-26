@@ -36,7 +36,7 @@ export default function TimestampPicker({ onSubmit, onCancel }: Props) {
         <TextInput
           style={styles.timeInput}
           placeholder="mm"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           keyboardType="number-pad"
           maxLength={3}
           value={minutes}
@@ -48,7 +48,7 @@ export default function TimestampPicker({ onSubmit, onCancel }: Props) {
         <TextInput
           style={styles.timeInput}
           placeholder="ss"
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textMuted}
           keyboardType="number-pad"
           maxLength={2}
           value={seconds}
@@ -59,7 +59,7 @@ export default function TimestampPicker({ onSubmit, onCancel }: Props) {
       <TextInput
         style={styles.noteInput}
         placeholder="Note (e.g., chorus, verse 2)"
-        placeholderTextColor="#666"
+        placeholderTextColor={colors.textMuted}
         value={note}
         onChangeText={setNote}
         testID="input-note"
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
     borderRadius: 8,
-    backgroundColor: colors.spotifyGreen,
+    backgroundColor: colors.primary,
     alignItems: 'center',
   },
   submitText: {

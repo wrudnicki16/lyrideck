@@ -11,6 +11,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import * as Sentry from '@sentry/react-native';
 import { useSpotifyAuth } from './src/hooks/useSpotifyAuth';
 import AppNavigator from './src/navigation/AppNavigator';
+import { colors } from './src/constants/colors';
 
 Sentry.init({
   dsn: 'https://5e93b869492da52eba4b256550b89bb6@o4511033353306112.ingest.us.sentry.io/4511033356517376',
@@ -41,7 +42,7 @@ Sentry.init({
 
 function ErrorFallback() {
   return (
-    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#121212' }}>
+    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#060a18' }}>
       <Text style={{ color: '#fff', fontSize: 16 }}>Something went wrong. Please restart the app.</Text>
     </SafeAreaView>
   );
@@ -58,12 +59,12 @@ function AppContent() {
           theme={{
             dark: true,
             colors: {
-              primary: '#1DB954',
-              background: '#121212',
-              card: '#121212',
+              primary: '#4d7cff',
+              background: '#060a18',
+              card: '#060a18',
               text: '#fff',
-              border: '#2a2a2a',
-              notification: '#1DB954',
+              border: '#1f2640',
+              notification: '#4d7cff',
             },
             fonts: {
               regular: { fontFamily: 'System', fontWeight: '400' },
@@ -119,14 +120,14 @@ export default Sentry.wrap(App);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: colors.background,
   },
   authBar: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: colors.surface,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a2a',
+    borderBottomColor: colors.surfaceLight,
   },
   authRow: {
     flexDirection: 'row',
@@ -136,21 +137,21 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.primary,
     marginRight: 8,
   },
   authText: {
-    color: '#1DB954',
+    color: colors.primary,
     fontSize: 13,
     fontWeight: '600',
     flex: 1,
   },
   logoutText: {
-    color: '#b3b3b3',
+    color: colors.textSecondary,
     fontSize: 13,
   },
   loginButton: {
-    backgroundColor: '#1DB954',
+    backgroundColor: colors.primary,
     paddingVertical: 10,
     borderRadius: 20,
     alignItems: 'center',
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   loginText: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: 14,
     fontWeight: '700',
   },
