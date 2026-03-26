@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12183A"/>
+      <stop offset="100%" stop-color="#0B0E1E"/>
+    </linearGradient>
+
+    <radialGradient id="core" cx="50%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#00F5FF"/>
+      <stop offset="50%" stop-color="#4D7CFF"/>
+      <stop offset="100%" stop-color="#9B4DFF"/>
+    </radialGradient>
+
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00F5FF" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#4D7CFF" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#9B4DFF" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" fill="#06080F"/>
+  <g filter="url(#cardShadow)">
+    <rect x="92" y="92" width="840" height="840" rx="140" fill="url(#bg)"/>
+  </g>
+
+  <!-- waveform -->
+  <path d="
+    M 171 552
+    C 214 552, 243 558, 274 500
+    C 292 466, 309 424, 330 408
+    C 347 395, 364 430, 380 497
+    C 393 551, 406 619, 428 667
+    C 440 693, 453 663, 467 594
+    C 484 512, 501 400, 521 338
+    C 534 296, 549 319, 561 388
+    C 575 470, 590 545, 620 600
+    C 639 635, 660 615, 681 575
+    C 698 543, 714 520, 728 512
+    C 738 506, 749 508, 760 523
+    C 772 540, 785 566, 799 585
+    C 814 605, 833 612, 862 600"
+    stroke="#FAFAFB" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <circle cx="750" cy="518" r="70" fill="url(#glow)"/>
+  <circle cx="750" cy="518" r="40" fill="url(#core)"/>
+
+  <!-- colored rays -->
+  <path d="M 699.53 445.91 L 668.55 401.68" stroke="#00F5FF" stroke-width="18" stroke-linecap="round" fill="none"/> <path d="M 750.00 430.00 L 750.00 376.00" stroke="#4D7CFF" stroke-width="18" stroke-linecap="round" fill="none"/> <path d="M 800.47 445.91 L 831.45 401.68" stroke="#9B4DFF" stroke-width="18" stroke-linecap="round" fill="none"/>
+</svg>
