@@ -19,6 +19,21 @@ describe('stripHtml', () => {
   it('returns plain text unchanged', () => {
     expect(stripHtml('plain text')).toBe('plain text');
   });
+  it('decodes &nbsp; to spaces', () => {
+    expect(stripHtml('अच्छा&nbsp;acchaa')).toBe('अच्छा acchaa');
+  });
+  it('decodes &amp; &lt; &gt; &quot;', () => {
+    expect(stripHtml('a &amp; b &lt; c &gt; d &quot;e&quot;')).toBe('a & b < c > d "e"');
+  });
+  it('decodes numeric entities', () => {
+    expect(stripHtml('&#39;hello&#39;')).toBe("'hello'");
+  });
+  it('decodes hex entities', () => {
+    expect(stripHtml('&#x27;hello&#x27;')).toBe("'hello'");
+  });
+  it('handles mixed HTML tags and entities', () => {
+    expect(stripHtml('<b>hello</b>&nbsp;<i>world</i>')).toBe('hello world');
+  });
 });
 
 describe('splitFields', () => {
