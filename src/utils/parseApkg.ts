@@ -64,14 +64,22 @@ function uint8ToBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
+const MAX_APKG_SIZE = 50 * 1024 * 1024; // 50MB
+
 export async function parseApkg(fileUri: string): Promise<ApkgResult> {
   const sqliteDir = new Directory(Paths.document, 'SQLite');
   const tempDbFile = new File(sqliteDir, TEMP_DB_NAME);
   let db: SQLite.SQLiteDatabase | null = null;
 
   try {
-    // 1. Read file as base64
+    // 1. Check file size and read as base64
     const apkgFile = new File(fileUri);
+    if (apkgFile.size && apkgFile.size > MAX_APKG_SIZE) {
+      throw new Error(
+        `This deck is too large (${Math.round(apkgFile.size / 1024 / 1024)}MB). ` +
+        'Please re-export from Anki with "Include media" unchecked, or split into smaller decks.'
+      );
+    }
     const base64 = await apkgFile.base64();
 
     // 2. Unzip and extract the collection database
