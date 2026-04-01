@@ -80,9 +80,18 @@ export default function DeckImportScreen({ navigation }: any) {
       if (result.canceled || !result.assets?.[0]) return;
 
       const file = result.assets[0];
+      const name = file.name.toLowerCase();
+      const validExtensions = ['.apkg', '.csv', '.txt', '.tsv'];
+      if (!validExtensions.some((ext) => name.endsWith(ext))) {
+        Alert.alert(
+          'Unsupported File',
+          'Please select an .apkg file (from Anki) or a .csv/.txt file.'
+        );
+        return;
+      }
       setFileName(file.name);
 
-      if (file.name.toLowerCase().endsWith('.apkg')) {
+      if (name.endsWith('.apkg')) {
         setLoading(true);
         try {
           const parsed = await parseApkg(file.uri);
