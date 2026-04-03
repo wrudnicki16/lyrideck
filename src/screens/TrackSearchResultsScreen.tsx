@@ -41,6 +41,7 @@ export default function TrackSearchResultsScreen({
   const [error, setError] = useState<string | null>(null);
   const [hasContext, setHasContext] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [controlsDisabled, setControlsDisabled] = useState(false);
   const trackIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -115,13 +116,22 @@ export default function TrackSearchResultsScreen({
   };
 
   const handlePlayPause = async () => {
+    if (controlsDisabled) return;
     const success = isPlaying ? await pausePlayback() : await resumePlayback();
-    if (success) setIsPlaying(!isPlaying);
+    if (success) {
+      setIsPlaying(!isPlaying);
+    } else {
+      setControlsDisabled(true);
+    }
   };
 
   const handleSkip = async (direction: 'next' | 'previous') => {
+    if (controlsDisabled) return;
     const success = direction === 'next' ? await skipToNext() : await skipToPrevious();
-    if (!success) return;
+    if (!success) {
+      setControlsDisabled(true);
+      return;
+    }
     // Wait briefly for Spotify to update, then fetch the new track
     setTimeout(async () => {
       const state = await getPlaybackState();
@@ -212,34 +222,38 @@ export default function TrackSearchResultsScreen({
       <View style={[styles.controlsRow, { width: albumSize }]}>
         <Pressable
           style={styles.skipButton}
-          onPress={hasContext ? () => handleSkip('previous') : undefined}
-          disabled={!hasContext}
+          onPress={hasContext && !controlsDisabled ? () => handleSkip('previous') : undefined}
+          disabled={!hasContext || controlsDisabled}
           accessibilityLabel="Previous track"
           accessibilityRole="button"
           testID="previous-track"
         >
-          <Ionicons name="play-skip-back" size={24} color={hasContext ? colors.textPrimary : colors.textMuted} />
+          <Ionicons name="play-skip-back" size={24} color={hasContext && !controlsDisabled ? colors.textPrimary : colors.textMuted} />
         </Pressable>
         <Pressable
-          style={styles.playPauseButton}
-          onPress={handlePlayPause}
+          style={[styles.playPauseButton, controlsDisabled && { opacity: 0.4 }]}
+          onPress={controlsDisabled ? undefined : handlePlayPause}
+          disabled={controlsDisabled}
           accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
           accessibilityRole="button"
           testID="play-pause"
         >
-          <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color={colors.textPrimary} />
+          <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color={controlsDisabled ? colors.textMuted : colors.textPrimary} />
         </Pressable>
         <Pressable
           style={styles.skipButton}
-          onPress={hasContext ? () => handleSkip('next') : undefined}
-          disabled={!hasContext}
+          onPress={hasContext && !controlsDisabled ? () => handleSkip('next') : undefined}
+          disabled={!hasContext || controlsDisabled}
           accessibilityLabel="Next track"
           accessibilityRole="button"
           testID="next-track"
         >
-          <Ionicons name="play-skip-forward" size={24} color={hasContext ? colors.textPrimary : colors.textMuted} />
+          <Ionicons name="play-skip-forward" size={24} color={hasContext && !controlsDisabled ? colors.textPrimary : colors.textMuted} />
         </Pressable>
       </View>
+      {controlsDisabled && (
+        <Text style={styles.premiumHint}>Playback controls require Spotify Premium</Text>
+      )}
 
       {/* Fallback search input */}
       {showFallback && (
@@ -366,6 +380,12 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: colors.surface,
     borderRadius: 28,
+  },
+  premiumHint: {
+    color: colors.textMuted,
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 12,
   },
   fallbackMessage: {
     color: colors.textMuted,
