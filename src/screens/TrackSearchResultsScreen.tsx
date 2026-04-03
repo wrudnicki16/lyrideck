@@ -21,12 +21,14 @@ interface Props {
   route: any;
   navigation: any;
   accessToken: string | null;
+  isPremium: boolean | null;
 }
 
 export default function TrackSearchResultsScreen({
   route,
   navigation,
   accessToken,
+  isPremium,
 }: Props) {
   const { width: screenWidth } = useWindowDimensions();
   const albumSize = Math.round(screenWidth * 2 / 3);
@@ -41,7 +43,7 @@ export default function TrackSearchResultsScreen({
   const [error, setError] = useState<string | null>(null);
   const [hasContext, setHasContext] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [controlsDisabled, setControlsDisabled] = useState(false);
+  const [controlsDisabled, setControlsDisabled] = useState(isPremium === false);
   const trackIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -218,41 +220,45 @@ export default function TrackSearchResultsScreen({
         <Text style={styles.artistName}>{artistText}</Text>
       </Pressable>
 
-      {/* Playback controls */}
-      <View style={[styles.controlsRow, { width: albumSize }]}>
-        <Pressable
-          style={styles.skipButton}
-          onPress={hasContext && !controlsDisabled ? () => handleSkip('previous') : undefined}
-          disabled={!hasContext || controlsDisabled}
-          accessibilityLabel="Previous track"
-          accessibilityRole="button"
-          testID="previous-track"
-        >
-          <Ionicons name="play-skip-back" size={24} color={hasContext && !controlsDisabled ? colors.textPrimary : colors.textMuted} />
-        </Pressable>
-        <Pressable
-          style={[styles.playPauseButton, controlsDisabled && { opacity: 0.4 }]}
-          onPress={controlsDisabled ? undefined : handlePlayPause}
-          disabled={controlsDisabled}
-          accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
-          accessibilityRole="button"
-          testID="play-pause"
-        >
-          <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color={controlsDisabled ? colors.textMuted : colors.textPrimary} />
-        </Pressable>
-        <Pressable
-          style={styles.skipButton}
-          onPress={hasContext && !controlsDisabled ? () => handleSkip('next') : undefined}
-          disabled={!hasContext || controlsDisabled}
-          accessibilityLabel="Next track"
-          accessibilityRole="button"
-          testID="next-track"
-        >
-          <Ionicons name="play-skip-forward" size={24} color={hasContext && !controlsDisabled ? colors.textPrimary : colors.textMuted} />
-        </Pressable>
-      </View>
-      {controlsDisabled && (
-        <Text style={styles.premiumHint}>Playback controls require Spotify Premium</Text>
+      {/* Playback controls — hidden when known non-premium, disabled as fallback when unknown */}
+      {isPremium !== false && (
+        <>
+          <View style={[styles.controlsRow, { width: albumSize }]}>
+            <Pressable
+              style={styles.skipButton}
+              onPress={hasContext && !controlsDisabled ? () => handleSkip('previous') : undefined}
+              disabled={!hasContext || controlsDisabled}
+              accessibilityLabel="Previous track"
+              accessibilityRole="button"
+              testID="previous-track"
+            >
+              <Ionicons name="play-skip-back" size={24} color={hasContext && !controlsDisabled ? colors.textPrimary : colors.textMuted} />
+            </Pressable>
+            <Pressable
+              style={[styles.playPauseButton, controlsDisabled && { opacity: 0.4 }]}
+              onPress={controlsDisabled ? undefined : handlePlayPause}
+              disabled={controlsDisabled}
+              accessibilityLabel={isPlaying ? 'Pause' : 'Play'}
+              accessibilityRole="button"
+              testID="play-pause"
+            >
+              <Ionicons name={isPlaying ? 'pause' : 'play'} size={32} color={controlsDisabled ? colors.textMuted : colors.textPrimary} />
+            </Pressable>
+            <Pressable
+              style={styles.skipButton}
+              onPress={hasContext && !controlsDisabled ? () => handleSkip('next') : undefined}
+              disabled={!hasContext || controlsDisabled}
+              accessibilityLabel="Next track"
+              accessibilityRole="button"
+              testID="next-track"
+            >
+              <Ionicons name="play-skip-forward" size={24} color={hasContext && !controlsDisabled ? colors.textPrimary : colors.textMuted} />
+            </Pressable>
+          </View>
+          {controlsDisabled && (
+            <Text style={styles.premiumHint}>Playback controls require Spotify Premium</Text>
+          )}
+        </>
       )}
 
       {/* Fallback search input */}

@@ -49,7 +49,7 @@ function ErrorFallback() {
 }
 
 function AppContent() {
-  const { accessToken, isAuthenticated, login, logout, isReady } = useSpotifyAuth();
+  const { accessToken, isAuthenticated, isPremium, login, logout, isReady } = useSpotifyAuth();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -100,7 +100,7 @@ function AppContent() {
             )}
           </View>
 
-          <AppNavigator accessToken={accessToken} />
+          <AppNavigator accessToken={accessToken} isPremium={isPremium} />
         </NavigationContainer>
       </Sentry.ErrorBoundary>
     </SafeAreaView>

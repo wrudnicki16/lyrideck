@@ -16,6 +16,7 @@ function base64URLEncode(buffer: ArrayBuffer): string {
 export function useSpotifyAuth() {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<number | null>(null);
+  const [isPremium, setIsPremium] = useState<boolean | null>(null);
 
   const redirectUri = makeRedirectUri({ path: 'callback' });
 
@@ -85,6 +86,20 @@ export function useSpotifyAuth() {
             console.log('[SpotifyAuth] Token received, expires in', tokenData.expires_in, 's');
             setAccessToken(tokenData.access_token);
             setExpiresAt(Date.now() + tokenData.expires_in * 1000);
+
+            // Check premium status (product field may be deprecated, so treat failure as unknown)
+            try {
+              const meRes = await fetch('https://api.spotify.com/v1/me', {
+                headers: { Authorization: `Bearer ${tokenData.access_token}` },
+              });
+              if (meRes.ok) {
+                const me = await meRes.json();
+                setIsPremium(me.product === 'premium');
+                console.log('[SpotifyAuth] Product:', me.product);
+              }
+            } catch {
+              // If /me fails, leave isPremium as null (unknown)
+            }
           } else {
             console.log('[SpotifyAuth] Token error:', JSON.stringify(tokenData));
           }
@@ -100,7 +115,8 @@ export function useSpotifyAuth() {
   const logout = () => {
     setAccessToken(null);
     setExpiresAt(null);
+    setIsPremium(null);
   };
 
-  return { accessToken, isAuthenticated: !!isTokenValid, login, logout, isReady: true };
+  return { accessToken, isAuthenticated: !!isTokenValid, isPremium, login, logout, isReady: true };
 }

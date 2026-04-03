@@ -12,6 +12,7 @@ const Stack = createNativeStackNavigator();
 
 interface Props {
   accessToken: string | null;
+  isPremium: boolean | null;
 }
 
 const screenOptions = {
@@ -21,7 +22,7 @@ const screenOptions = {
   contentStyle: { backgroundColor: '#060a18' },
 };
 
-export default function AppNavigator({ accessToken }: Props) {
+export default function AppNavigator({ accessToken, isPremium }: Props) {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen
@@ -65,7 +66,7 @@ export default function AppNavigator({ accessToken }: Props) {
         options={{ title: 'Now Playing' }}
       >
         {(props: any) => (
-          <TrackSearchResultsScreen {...props} accessToken={accessToken} />
+          <TrackSearchResultsScreen {...props} accessToken={accessToken} isPremium={isPremium} />
         )}
       </Stack.Screen>
     </Stack.Navigator>
