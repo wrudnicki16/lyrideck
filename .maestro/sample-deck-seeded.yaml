@@ -1,0 +1,35 @@
+appId: host.exp.exponent
+---
+
+# Sample Deck Seeded - On a fresh install, the sample deck should auto-appear
+
+- launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 30000
+- openLink: "${EXPO_URL}"
+
+# Dismiss Expo Go developer menu
+- extendedWaitUntil:
+    visible: "Continue"
+    timeout: 5000
+    optional: true
+- tapOn:
+    point: "90%,35%"
+    optional: true
+
+- assertVisible: "LyriDeck"
+
+# Sample deck should be visible
+- assertVisible: "Sample Deck — Spanish"
+
+# Tap into it
+- tapOn: "Sample Deck — Spanish"
+
+# Verify some sample cards exist
+- assertVisible: "Hola"
+- assertVisible: "Hello"
+- assertVisible: "Gracias"
+
+# Go back
+- back

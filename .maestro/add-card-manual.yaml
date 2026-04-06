@@ -1,0 +1,76 @@
+appId: host.exp.exponent
+---
+
+# Add Card Manually - Create a deck, add cards via the "+" button, verify they appear
+
+- launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 30000
+- openLink: "${EXPO_URL}"
+
+# Dismiss Expo Go developer menu
+- extendedWaitUntil:
+    visible: "Continue"
+    timeout: 5000
+    optional: true
+- tapOn:
+    point: "90%,35%"
+    optional: true
+
+- assertVisible: "LyriDeck"
+
+# Create a new deck first
+- tapOn:
+    id: "create-deck"
+- assertVisible: "Create Deck"
+- tapOn:
+    id: "input-deck-name"
+- inputText: "Cards Test Deck"
+- tapOn: "Create"
+
+# Should be on the empty CardQueueScreen
+- assertVisible: "Cards Test Deck"
+- assertVisible: "No cards to show."
+
+# Tap the add card button (wait for the screen to fully render first)
+- waitForAnimationToEnd:
+    timeout: 2000
+- tapOn:
+    id: "add-card-btn"
+
+# Add Card modal should appear
+- assertVisible: "Add Card"
+
+# Enter front and back
+- tapOn:
+    id: "input-card-front"
+- inputText: "Hola"
+- tapOn:
+    id: "input-card-back"
+- inputText: "Hello"
+
+# Confirm
+- tapOn: "Add"
+
+# Card should now appear in the list
+- assertVisible: "Hola"
+- assertVisible: "Hello"
+
+# Add a second card
+- waitForAnimationToEnd:
+    timeout: 1000
+- tapOn:
+    id: "add-card-btn"
+- assertVisible: "Add Card"
+- tapOn:
+    id: "input-card-front"
+- inputText: "Adios"
+- tapOn:
+    id: "input-card-back"
+- inputText: "Goodbye"
+- tapOn: "Add"
+
+# Both cards should be visible
+- assertVisible: "Hola"
+- assertVisible: "Adios"

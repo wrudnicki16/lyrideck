@@ -1,0 +1,51 @@
+appId: host.exp.exponent
+---
+
+# Create Deck Manually - Tap "Create Deck", enter a name, verify it appears in the list
+
+- launchApp
+- extendedWaitUntil:
+    visible: "Expo Go"
+    timeout: 30000
+- openLink: "${EXPO_URL}"
+
+# Dismiss Expo Go developer menu
+- extendedWaitUntil:
+    visible: "Continue"
+    timeout: 5000
+    optional: true
+- tapOn:
+    point: "90%,35%"
+    optional: true
+
+- assertVisible: "LyriDeck"
+
+# Tap Create Deck
+- tapOn:
+    id: "create-deck"
+
+# Modal should appear
+- assertVisible: "Create Deck"
+
+# Enter a deck name
+- tapOn:
+    id: "input-deck-name"
+- inputText: "Test Manual Deck"
+
+# Confirm
+- tapOn: "Create"
+
+# Should navigate into the new deck (CardQueueScreen)
+- assertVisible: "Test Manual Deck"
+- assertVisible: "Filters"
+
+# Verify the add card button exists
+- assertVisible:
+    id: "add-card-btn"
+
+# Go back to home
+- back
+
+# Verify the deck appears in the list
+- assertVisible: "LyriDeck"
+- assertVisible: "Test Manual Deck"
