@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { getCardsByDeck, updateDeckSearchField, updateDeckStatusFilter, updateDeckLyricsOnly, getTrackForCard, getNextPendingCard } from '../db/database';
+import { getCardsByDeck, updateDeckSearchField, updateDeckStatusFilter, updateDeckLyricsOnly, getTrackForCard, getNextPendingCard, insertCard } from '../db/database';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
 import FilterPill from '../components/FilterPill';
@@ -30,6 +30,9 @@ export default function CardQueueScreen({ route, navigation }: any) {
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
   const [playlistName, setPlaylistName] = useState(deckName);
+  const [showAddCard, setShowAddCard] = useState(false);
+  const [newCardFront, setNewCardFront] = useState('');
+  const [newCardBack, setNewCardBack] = useState('');
 
   const toggleSearchField = async () => {
     const next = searchField === 'back' ? 'front' : 'back';
@@ -102,6 +105,17 @@ export default function CardQueueScreen({ route, navigation }: any) {
     });
   };
 
+  const handleAddCard = async () => {
+    const front = newCardFront.trim();
+    const back = newCardBack.trim();
+    if (!front && !back) return;
+    await insertCard(deckId, front, back);
+    setShowAddCard(false);
+    setNewCardFront('');
+    setNewCardBack('');
+    await loadCards();
+  };
+
   useFocusEffect(
     useCallback(() => {
       loadCards();
@@ -135,6 +149,15 @@ export default function CardQueueScreen({ route, navigation }: any) {
     <View style={styles.container}>
       <Text style={styles.title}>{deckName}</Text>
       <View style={styles.headerRow}>
+        <Pressable
+          style={styles.addCardButton}
+          onPress={() => setShowAddCard(true)}
+          accessibilityLabel="Add Card"
+          accessibilityRole="button"
+          testID="add-card-btn"
+        >
+          <Ionicons name="add" size={16} color={colors.textPrimary} />
+        </Pressable>
         <Pressable
           style={styles.nowPlayingButton}
           onPress={() =>
@@ -295,6 +318,34 @@ export default function CardQueueScreen({ route, navigation }: any) {
           testID="input-playlist-name"
         />
       </ConfirmationModal>
+
+      <ConfirmationModal
+        visible={showAddCard}
+        title="Add Card"
+        onCancel={() => { setShowAddCard(false); setNewCardFront(''); setNewCardBack(''); }}
+        onConfirm={handleAddCard}
+        confirmLabel="Add"
+      >
+        <TextInput
+          style={styles.cardInput}
+          value={newCardFront}
+          onChangeText={setNewCardFront}
+          placeholder="Front (e.g. Hola)"
+          placeholderTextColor={colors.textMuted}
+          autoFocus
+          testID="input-card-front"
+        />
+        <TextInput
+          style={styles.cardInput}
+          value={newCardBack}
+          onChangeText={setNewCardBack}
+          placeholder="Back (e.g. Hello)"
+          placeholderTextColor={colors.textMuted}
+          onSubmitEditing={handleAddCard}
+          returnKeyType="done"
+          testID="input-card-back"
+        />
+      </ConfirmationModal>
     </View>
   );
 }
@@ -438,5 +489,19 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 8,
     marginBottom: 20,
+  },
+  addCardButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  cardInput: {
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
+    fontSize: 16,
+    padding: 14,
+    borderRadius: 8,
+    marginBottom: 12,
   },
 });

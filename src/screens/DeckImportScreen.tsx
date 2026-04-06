@@ -6,14 +6,16 @@ import {
   FlatList,
   StyleSheet,
   Alert,
+  TextInput,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
-import { insertDeck, insertCards, getAllDecks, deleteDeck } from '../db/database';
+import { insertDeck, insertCards, getAllDecks, deleteDeck, seedSampleDeck } from '../db/database';
 import { parseApkg, ApkgResult } from '../utils/parseApkg';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../constants/colors';
+import ConfirmationModal from '../components/ConfirmationModal';
 import { ParsedCard, DeckRow } from '../types';
 
 function parseCSV(text: string): ParsedCard[] {
@@ -58,16 +60,34 @@ export default function DeckImportScreen({ navigation }: any) {
   const [apkgDeckCards, setApkgDeckCards] = useState<
     Array<{ deckName: string; cards: { front: string; back: string; tags: string }[] }>
   >([]);
+  const [showCreateDeck, setShowCreateDeck] = useState(false);
+  const [newDeckName, setNewDeckName] = useState('');
 
   useFocusEffect(
     useCallback(() => {
-      loadDecks();
+      seedSampleDeck().then(loadDecks);
     }, [])
   );
 
   const loadDecks = async () => {
     const d = await getAllDecks();
     setDecks(d as DeckRow[]);
+  };
+
+  const handleCreateDeck = async () => {
+    const name = newDeckName.trim();
+    if (!name) return;
+    const deckId = await insertDeck(name);
+    setShowCreateDeck(false);
+    setNewDeckName('');
+    await loadDecks();
+    navigation.navigate('CardQueue', {
+      deckId,
+      deckName: name,
+      searchField: 'back',
+      statusFilter: null,
+      lyricsOnly: false,
+    });
   };
 
   const pickFile = async () => {
@@ -214,14 +234,21 @@ export default function DeckImportScreen({ navigation }: any) {
 
       {preview.length === 0 && !apkgResult ? (
         <>
-          <Pressable style={styles.importButton} onPress={pickFile} accessibilityLabel="Import Deck" accessibilityRole="button" testID="import-deck">
-            <Text style={styles.importButtonText}>Import Deck</Text>
-          </Pressable>
+          <View style={styles.actionRow}>
+            <Pressable style={styles.createButton} onPress={() => setShowCreateDeck(true)} accessibilityLabel="Create Deck" accessibilityRole="button" testID="create-deck">
+              <Ionicons name="add" size={18} color={colors.textPrimary} style={{ marginRight: 4 }} />
+              <Text style={styles.importButtonText}>Create Deck</Text>
+            </Pressable>
+            <Pressable style={styles.importButton} onPress={pickFile} accessibilityLabel="Import Deck" accessibilityRole="button" testID="import-deck">
+              <Ionicons name="download-outline" size={18} color={colors.textPrimary} style={{ marginRight: 4 }} />
+              <Text style={styles.importButtonText}>Import Deck</Text>
+            </Pressable>
+          </View>
 
           <Text style={styles.sectionTitle}>Your Decks</Text>
           {decks.length === 0 ? (
             <Text style={styles.emptyText}>
-              No decks yet. Import a file to get started.
+              No decks yet. Create or import a deck to get started.
             </Text>
           ) : (
             <FlatList
@@ -361,6 +388,26 @@ export default function DeckImportScreen({ navigation }: any) {
           </View>
         </>
       )}
+
+      <ConfirmationModal
+        visible={showCreateDeck}
+        title="Create Deck"
+        onCancel={() => { setShowCreateDeck(false); setNewDeckName(''); }}
+        onConfirm={handleCreateDeck}
+        confirmLabel="Create"
+      >
+        <TextInput
+          style={styles.nameInput}
+          value={newDeckName}
+          onChangeText={setNewDeckName}
+          placeholder="Deck name"
+          placeholderTextColor={colors.textMuted}
+          autoFocus
+          onSubmitEditing={handleCreateDeck}
+          returnKeyType="done"
+          testID="input-deck-name"
+        />
+      </ConfirmationModal>
     </View>
   );
 }
@@ -396,12 +443,28 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 13,
   },
-  importButton: {
+  actionRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 24,
+  },
+  createButton: {
+    flex: 1,
     backgroundColor: colors.primary,
+    flexDirection: 'row',
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
-    marginBottom: 24,
+    justifyContent: 'center',
+  },
+  importButton: {
+    flex: 1,
+    backgroundColor: colors.buttonSecondary,
+    flexDirection: 'row',
+    padding: 16,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   importButtonText: {
     color: colors.textPrimary,
@@ -516,5 +579,13 @@ const styles = StyleSheet.create({
   checkboxSelected: {
     backgroundColor: colors.primary,
     borderColor: colors.primary,
+  },
+  nameInput: {
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
+    fontSize: 16,
+    padding: 14,
+    borderRadius: 8,
+    marginBottom: 20,
   },
 });

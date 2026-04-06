@@ -92,6 +92,28 @@ async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {
   `);
 }
 
+// --- Sample deck ---
+
+export async function seedSampleDeck(): Promise<void> {
+  const database = await getDatabase();
+  const existing = await database.getFirstAsync<{ count: number }>(
+    'SELECT COUNT(*) as count FROM decks'
+  );
+  if (existing && existing.count > 0) return;
+
+  const deckId = await insertDeck('Sample Deck — Spanish');
+  await insertCards(deckId, [
+    { front: 'Hola', back: 'Hello', tags: '' },
+    { front: 'Adiós', back: 'Goodbye', tags: '' },
+    { front: 'Gracias', back: 'Thank you', tags: '' },
+    { front: 'Por favor', back: 'Please', tags: '' },
+    { front: 'Lo siento', back: "I'm sorry", tags: '' },
+    { front: 'Buenos días', back: 'Good morning', tags: '' },
+    { front: 'Buenas noches', back: 'Good night', tags: '' },
+    { front: 'Te quiero', back: 'I love you', tags: '' },
+  ]);
+}
+
 // --- Deck operations ---
 
 export async function insertDeck(name: string): Promise<number> {
@@ -154,6 +176,19 @@ export async function deleteDeck(deckId: number): Promise<void> {
 }
 
 // --- Card operations ---
+
+export async function insertCard(
+  deckId: number,
+  front: string,
+  back: string
+): Promise<number> {
+  const database = await getDatabase();
+  const result = await database.runAsync(
+    'INSERT INTO cards (deck_id, front, back, tags) VALUES (?, ?, ?, ?)',
+    [deckId, front, back, '']
+  );
+  return result.lastInsertRowId;
+}
 
 export async function insertCards(
   deckId: number,
