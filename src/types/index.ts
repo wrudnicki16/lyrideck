@@ -57,6 +57,7 @@ export interface CardRow {
   back: string;
   tags: string;
   status: string;
+  manual_entry_id?: number | null;
 }
 
 export interface DeckRow {
@@ -115,10 +116,26 @@ export interface CardWithDeck {
   clip_count: number;
 }
 
+export interface ManualEntry {
+  id: number;
+  card_id: number;
+  title: string;
+  url: string;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ManualEntryWithCard extends ManualEntry {
+  front: string;
+  back: string;
+}
+
 export interface CardParam {
   id: number;
   front: string;
   back: string;
   status: string;
   searchText: string;
+  hasManualEntry: boolean;
 }

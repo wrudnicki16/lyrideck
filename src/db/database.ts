@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { CardWithDeck } from '../types';
+import { CardWithDeck, ManualEntry, ManualEntryWithCard } from '../types';
 import { isLyrics } from '../utils/isLyrics';
 
 let db: SQLite.SQLiteDatabase;
@@ -90,6 +90,35 @@ async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {
       UNIQUE(card_id, track_id)
     );
   `);
+
+  // Manual entries (user-typed song title / link / notes for cards without Spotify)
+  await database.execAsync(`
+    CREATE TABLE IF NOT EXISTS manual_entries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      card_id INTEGER NOT NULL UNIQUE,
+      title TEXT NOT NULL DEFAULT '',
+      url TEXT NOT NULL DEFAULT '',
+      notes TEXT NOT NULL DEFAULT '',
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE
+    );
+  `);
+}
+
+// --- Mutual exclusivity helper ---
+
+async function clearOtherMatchSources(
+  cardId: number,
+  keep: 'manual' | 'spotify'
+): Promise<void> {
+  const database = await getDatabase();
+  if (keep === 'manual') {
+    await database.runAsync('DELETE FROM timestamps WHERE card_id = ?', cardId);
+    await database.runAsync('DELETE FROM card_tracks WHERE card_id = ?', cardId);
+  } else {
+    await database.runAsync('DELETE FROM manual_entries WHERE card_id = ?', cardId);
+  }
 }
 
 // --- Sample deck ---
@@ -219,12 +248,20 @@ export async function getCardsByDeck(
   const database = await getDatabase();
   if (status) {
     return database.getAllAsync(
-      'SELECT * FROM cards WHERE deck_id = ? AND status = ? ORDER BY id',
+      `SELECT c.*, me.id as manual_entry_id
+       FROM cards c
+       LEFT JOIN manual_entries me ON me.card_id = c.id
+       WHERE c.deck_id = ? AND c.status = ?
+       ORDER BY c.id`,
       [deckId, status]
     );
   }
   return database.getAllAsync(
-    'SELECT * FROM cards WHERE deck_id = ? ORDER BY id',
+    `SELECT c.*, me.id as manual_entry_id
+     FROM cards c
+     LEFT JOIN manual_entries me ON me.card_id = c.id
+     WHERE c.deck_id = ?
+     ORDER BY c.id`,
     deckId
   );
 }
@@ -271,6 +308,7 @@ export async function insertTimestamp(ts: {
       ts.captureMode,
     ]
   );
+  await clearOtherMatchSources(ts.cardId, 'spotify');
   return result.lastInsertRowId;
 }
 
@@ -460,4 +498,61 @@ export async function searchCardsByText(query: string): Promise<CardWithDeck[]> 
      ORDER BY clip_count DESC, c.id`,
     [pattern, pattern]
   ) as Promise<CardWithDeck[]>;
+}
+
+// --- Manual entry operations ---
+
+export async function upsertManualEntry(entry: {
+  cardId: number;
+  title: string;
+  url: string;
+  notes: string;
+}): Promise<number> {
+  const database = await getDatabase();
+  const result = await database.runAsync(
+    `INSERT INTO manual_entries (card_id, title, url, notes, updated_at)
+     VALUES (?, ?, ?, ?, datetime('now'))
+     ON CONFLICT(card_id) DO UPDATE SET
+       title = excluded.title,
+       url = excluded.url,
+       notes = excluded.notes,
+       updated_at = datetime('now')`,
+    [entry.cardId, entry.title, entry.url, entry.notes]
+  );
+  await clearOtherMatchSources(entry.cardId, 'manual');
+  await database.runAsync(
+    `UPDATE cards SET status = 'matched' WHERE id = ?`,
+    entry.cardId
+  );
+  return result.lastInsertRowId;
+}
+
+export async function getManualEntryForCard(
+  cardId: number
+): Promise<ManualEntry | null> {
+  const database = await getDatabase();
+  const row = await database.getFirstAsync(
+    'SELECT * FROM manual_entries WHERE card_id = ?',
+    cardId
+  );
+  return (row as ManualEntry) ?? null;
+}
+
+export async function deleteManualEntryForCard(cardId: number): Promise<void> {
+  const database = await getDatabase();
+  await database.runAsync('DELETE FROM manual_entries WHERE card_id = ?', cardId);
+}
+
+export async function getManualEntriesByDeck(
+  deckId: number
+): Promise<ManualEntryWithCard[]> {
+  const database = await getDatabase();
+  return database.getAllAsync(
+    `SELECT me.*, c.front, c.back
+     FROM manual_entries me
+     JOIN cards c ON c.id = me.card_id
+     WHERE c.deck_id = ?
+     ORDER BY c.id`,
+    deckId
+  ) as Promise<ManualEntryWithCard[]>;
 }
