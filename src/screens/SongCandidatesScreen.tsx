@@ -12,8 +12,9 @@ import {
 import { useSpotify } from '../hooks/useSpotify';
 import TrackCard from '../components/TrackCard';
 import { SpotifyTrack } from '../types';
-import { getTracksWithClipsForCard, updateCardStatus, getNextPendingCard, getPendingCardCount } from '../db/database';
+import { getTracksWithClipsForCard, updateCardStatus, getNextPendingCard, getPendingCardCount, upsertManualEntry } from '../db/database';
 import { colors } from '../constants/colors';
+import ManualEntryForm from '../components/ManualEntryForm';
 
 interface Props {
   route: any;
@@ -35,6 +36,7 @@ export default function SongCandidatesScreen({
   const [searched, setSearched] = useState(false);
   const [tracksWithClips, setTracksWithClips] = useState<Map<string, number>>(new Map());
   const [pendingCount, setPendingCount] = useState<number | null>(null);
+  const [manualMode, setManualMode] = useState(!accessToken);
 
   useEffect(() => {
     if (reviewMode && deckId != null) {
@@ -139,16 +141,6 @@ export default function SongCandidatesScreen({
     });
   };
 
-  if (!accessToken) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.authMessage}>
-          Please log in with Spotify to search for songs.
-        </Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       {reviewMode && pendingCount != null && (
@@ -160,56 +152,91 @@ export default function SongCandidatesScreen({
         <Text style={styles.cardBack}>{cardBack}</Text>
       </View>
 
-      <View style={styles.searchRow}>
-        <TextInput
-          style={styles.searchInput}
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Search Spotify..."
-          placeholderTextColor={colors.textMuted}
-          onSubmitEditing={() => doSearch(query)}
-          returnKeyType="search"
-          numberOfLines={1}
-          multiline={false}
-          testID="input-search"
+      {manualMode ? (
+        <ManualEntryForm
+          onSave={async (data) => {
+            await upsertManualEntry({
+              cardId,
+              title: data.title,
+              url: data.url,
+              notes: data.notes,
+            });
+            if (reviewMode) {
+              await advanceToNext();
+            } else {
+              navigation.goBack();
+            }
+          }}
+          onCancel={() => {
+            if (accessToken) {
+              setManualMode(false);
+            }
+          }}
         />
-      </View>
-
-      {reviewMode && (
-        <Pressable style={styles.skipButton} onPress={handleSkip} accessibilityLabel="Skip" accessibilityRole="button" testID="skip-btn">
-          <Text style={styles.skipButtonText}>Skip</Text>
-        </Pressable>
-      )}
-
-      {loading ? (
-        <ActivityIndicator
-          size="large"
-          color={colors.primary}
-          style={{ marginTop: 40 }}
-        />
-      ) : results.length === 0 && searched ? (
-        <Text style={styles.noResults}>
-          No tracks found. Try a different search.
-        </Text>
       ) : (
-        <FlatList
-          data={[...results].sort((a, b) => {
-            const aClips = tracksWithClips.get(a.id) ?? 0;
-            const bClips = tracksWithClips.get(b.id) ?? 0;
-            if (aClips > 0 && bClips === 0) return -1;
-            if (aClips === 0 && bClips > 0) return 1;
-            return 0;
-          })}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TrackCard
-              track={item}
-              onSelect={handleSelect}
-              clipCount={tracksWithClips.get(item.id)}
+        <>
+          <View style={styles.searchRow}>
+            <TextInput
+              style={styles.searchInput}
+              value={query}
+              onChangeText={setQuery}
+              placeholder="Search Spotify..."
+              placeholderTextColor={colors.textMuted}
+              onSubmitEditing={() => doSearch(query)}
+              returnKeyType="search"
+              numberOfLines={1}
+              multiline={false}
+              testID="input-search"
+            />
+          </View>
+
+          <Pressable
+            style={styles.manualPill}
+            onPress={() => setManualMode(true)}
+            accessibilityLabel="Enter manually"
+            accessibilityRole="button"
+            testID="enter-manually-btn"
+          >
+            <Text style={styles.manualPillText}>Enter manually</Text>
+          </Pressable>
+
+          {reviewMode && (
+            <Pressable style={styles.skipButton} onPress={handleSkip} accessibilityLabel="Skip" accessibilityRole="button" testID="skip-btn">
+              <Text style={styles.skipButtonText}>Skip</Text>
+            </Pressable>
+          )}
+
+          {loading ? (
+            <ActivityIndicator
+              size="large"
+              color={colors.primary}
+              style={{ marginTop: 40 }}
+            />
+          ) : results.length === 0 && searched ? (
+            <Text style={styles.noResults}>
+              No tracks found. Try a different search.
+            </Text>
+          ) : (
+            <FlatList
+              data={[...results].sort((a, b) => {
+                const aClips = tracksWithClips.get(a.id) ?? 0;
+                const bClips = tracksWithClips.get(b.id) ?? 0;
+                if (aClips > 0 && bClips === 0) return -1;
+                if (aClips === 0 && bClips > 0) return 1;
+                return 0;
+              })}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TrackCard
+                  track={item}
+                  onSelect={handleSelect}
+                  clipCount={tracksWithClips.get(item.id)}
+                />
+              )}
+              contentContainerStyle={{ paddingBottom: 20 }}
             />
           )}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+        </>
       )}
     </View>
   );
@@ -247,11 +274,18 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
   },
-  authMessage: {
+  manualPill: {
+    alignSelf: 'center',
+    backgroundColor: colors.surfaceLight,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
+    marginBottom: 12,
+  },
+  manualPillText: {
     color: colors.textSecondary,
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 60,
+    fontSize: 13,
+    fontWeight: '600',
   },
   noResults: {
     color: colors.textMuted,
