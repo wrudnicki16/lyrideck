@@ -9,14 +9,18 @@ import {
 } from 'react-native';
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { getTimestampsByDeck } from '../db/database';
+import { getTimestampsByDeck, getManualEntriesByDeck } from '../db/database';
 import { colors } from '../constants/colors';
 import { formatMs } from '../utils/formatMs';
-import { ExportRow } from '../types';
+import { ExportRow, ManualEntryWithCard } from '../types';
+
+type ExportItem =
+  | { kind: 'spotify'; row: ExportRow & { card_id?: number } }
+  | { kind: 'manual'; row: ManualEntryWithCard };
 
 export default function ExportScreen({ route }: any) {
   const { deckId, deckName } = route.params;
-  const [rows, setRows] = useState<ExportRow[]>([]);
+  const [items, setItems] = useState<ExportItem[]>([]);
   const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
@@ -24,34 +28,73 @@ export default function ExportScreen({ route }: any) {
   }, []);
 
   const loadData = async () => {
-    const data = await getTimestampsByDeck(deckId);
-    setRows(data as ExportRow[]);
+    const [timestamps, manualEntries] = await Promise.all([
+      getTimestampsByDeck(deckId),
+      getManualEntriesByDeck(deckId),
+    ]);
+    const merged: ExportItem[] = [
+      ...(timestamps as (ExportRow & { card_id: number })[]).map(
+        (t) => ({ kind: 'spotify' as const, row: t })
+      ),
+      ...manualEntries.map((m) => ({ kind: 'manual' as const, row: m })),
+    ];
+    merged.sort((a, b) => {
+      const aId = a.kind === 'spotify' ? (a.row.card_id ?? 0) : a.row.card_id;
+      const bId = b.kind === 'spotify' ? (b.row.card_id ?? 0) : b.row.card_id;
+      return aId - bId;
+    });
+    setItems(merged);
   };
 
   const exportCSV = async () => {
-    if (rows.length === 0) {
-      Alert.alert('Nothing to export', 'No timestamps saved yet.');
+    if (items.length === 0) {
+      Alert.alert('Nothing to export', 'No saved songs yet.');
       return;
     }
 
     setExporting(true);
     try {
       const header =
-        'Front,Back,Track,Artist,Timestamp,Note,Mode,Spotify URL,Captured At';
-      const csvRows = rows.map((r) => {
-        const escape = (s: string) =>
-          `"${(s ?? '').replace(/"/g, '""')}"`;
-        return [
-          escape(r.front),
-          escape(r.back),
-          escape(r.track_name),
-          escape(r.artist_name),
-          formatMs(r.progress_ms),
-          escape(r.note),
-          r.capture_mode,
-          r.spotify_url,
-          r.captured_at,
-        ].join(',');
+        'Front,Back,Source,Track,Artist,Timestamp,Note,Mode,Spotify URL,Captured At,Manual Title,Manual Link,Manual Notes';
+      const escape = (s: string) =>
+        `"${(s ?? '').replace(/"/g, '""')}"`;
+
+      const csvRows = items.map((item) => {
+        if (item.kind === 'spotify') {
+          const r = item.row;
+          return [
+            escape(r.front),
+            escape(r.back),
+            'spotify',
+            escape(r.track_name),
+            escape(r.artist_name),
+            formatMs(r.progress_ms),
+            escape(r.note),
+            r.capture_mode,
+            r.spotify_url,
+            r.captured_at,
+            '',
+            '',
+            '',
+          ].join(',');
+        } else {
+          const r = item.row;
+          return [
+            escape(r.front),
+            escape(r.back),
+            'manual',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            escape(r.title),
+            escape(r.url),
+            escape(r.notes),
+          ].join(',');
+        }
       });
 
       const csv = [header, ...csvRows].join('\n');
@@ -79,7 +122,7 @@ export default function ExportScreen({ route }: any) {
     <View style={styles.container}>
       <Text style={styles.title}>Export: {deckName}</Text>
       <Text style={styles.subtitle}>
-        {rows.length} timestamp{rows.length !== 1 ? 's' : ''} to export
+        {items.length} entr{items.length !== 1 ? 'ies' : 'y'} to export
       </Text>
 
       <Pressable
@@ -95,23 +138,39 @@ export default function ExportScreen({ route }: any) {
         </Text>
       </Pressable>
 
-      {rows.length > 0 && (
+      {items.length > 0 && (
         <FlatList
-          data={rows}
+          data={items}
           keyExtractor={(_, i) => i.toString()}
           style={{ marginTop: 16 }}
-          renderItem={({ item }) => (
-            <View style={styles.row}>
-              <Text style={styles.rowFront}>{item.front}</Text>
-              <Text style={styles.rowTrack}>
-                {item.track_name} - {item.artist_name}
-              </Text>
-              <Text style={styles.rowTime}>
-                {formatMs(item.progress_ms)}
-                {item.note ? ` (${item.note})` : ''}
-              </Text>
-            </View>
-          )}
+          renderItem={({ item }) => {
+            if (item.kind === 'spotify') {
+              const r = item.row;
+              return (
+                <View style={styles.row}>
+                  <Text style={styles.rowFront}>{r.front}</Text>
+                  <Text style={styles.rowTrack}>
+                    {r.track_name} - {r.artist_name}
+                  </Text>
+                  <Text style={styles.rowTime}>
+                    {formatMs(r.progress_ms)}
+                    {r.note ? ` (${r.note})` : ''}
+                  </Text>
+                </View>
+              );
+            }
+            const r = item.row;
+            const display = r.title || r.url || '(no title)';
+            return (
+              <View style={styles.row}>
+                <Text style={styles.rowFront}>{r.front}</Text>
+                <Text style={styles.rowTrack}>{display}</Text>
+                {r.notes ? (
+                  <Text style={styles.rowTime}>{r.notes}</Text>
+                ) : null}
+              </View>
+            );
+          }}
         />
       )}
     </View>
