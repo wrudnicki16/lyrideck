@@ -66,7 +66,7 @@ interface ManualEntryFormProps {
 }
 ```
 
-The component owns its own state and handles the upsert. It does NOT know about navigation, review mode, or whether it's a new vs existing entry — that's all decided by the parent via callbacks.
+The component owns its own state and handles the upsert. It does NOT know about navigation, review mode, `accessToken`, or whether it's a new vs existing entry — that's all decided by the parent via callbacks. The "Spotify" header right button on `ManualEntryScreen` is rendered by *the screen*, not by `ManualEntryForm`, since the form is navigation-agnostic.
 
 ## Data Model
 
@@ -158,12 +158,12 @@ WHERE c.deck_id = ?
 ORDER BY c.id
 ```
 
-(Same change applied to the filtered version.) `manual_entry_id` is the entry's id when present, null otherwise. `CardQueueScreen` uses this for the status icon and the tap handler — no second query needed.
+The `LEFT JOIN` is applied to both the filtered (`status = ?`) and unfiltered branches of the existing function. `manual_entry_id` is the entry's id when present, null otherwise. `CardQueueScreen` uses this for the status icon — the tap handler only needs `manual_entry_id` as a truthy/falsy flag, since `ManualEntryScreen` re-fetches the full entry on mount via `getManualEntryForCard(cardId)`.
 
 ### What does NOT change
 
 - `getTrackForCard` stays Spotify-only. The `CardQueueScreen` tap handler checks `manual_entry_id` first, then falls through.
-- `getNextPendingCard` and `getPendingCardCount` filter on `status = 'pending'`, and a manually-matched card has `status = 'matched'`, so they naturally exclude manual matches.
+- `getNextPendingCard` and `getPendingCardCount` filter on `status = 'pending'`, and a manually-matched card has `status = 'matched'`, so they naturally exclude manual matches. Consequence: in review mode, after saving a manual entry, `advanceToNext()` skips the just-saved card without any special handling — the existing pending-only filter does the work.
 
 ## Screens
 
@@ -186,8 +186,9 @@ No new route params.
 - `cardId: number`
 - `cardFront: string`
 - `cardBack: string`
-- `manualEntryId: number`
 - `searchField: 'front' | 'back'`
+
+The screen loads the manual entry on mount via `getManualEntryForCard(cardId)`. There's no `manualEntryId` param — the `manual_entry_id` field on `CardRow` is only used by `CardQueueScreen` to decide *whether* to navigate here, not as a fetch handle.
 
 **Layout:**
 1. Card preview (same `cardInfo` block as `SongCandidatesScreen`)
@@ -329,8 +330,9 @@ All testing is via Maestro flows in `.maestro/`. No unit tests (no Jest setup in
 - Tap the same card → assert `Manual Entry` screen with title pre-filled
 
 **`.maestro/manual-entry-edit.yaml`** (group: `manual-entry`)
-- Setup: pre-create a manual entry (executes the no-spotify create steps)
-- From `CardQueueScreen`, tap the manually-matched card → assert `Manual Entry` opens
+- The "pre-create a manual entry" steps are inlined at the top of this file (rather than factored into a `.maestro/setup/` flow), since they're short and only used by this single test.
+- Inline create: launch app, dismiss dev menu, tap into the seeded sample deck, tap a pending card, type a title, save.
+- Then: from `CardQueueScreen`, tap the manually-matched card → assert `Manual Entry` opens
 - Verify form fields pre-filled with previous values
 - Edit the title, save, assert updated value on re-tap
 
