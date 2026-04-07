@@ -16,7 +16,9 @@
     ],
     "moduleNameMapper": {
       "^expo-file-system$": "<rootDir>/src/__mocks__/expo-file-system.ts",
-      "^expo-sqlite$": "<rootDir>/src/__mocks__/expo-sqlite.ts"
+      "^expo-sqlite$": "<rootDir>/src/__mocks__/expo-sqlite.ts",
+      "^@expo/vector-icons$": "<rootDir>/src/__mocks__/@expo/vector-icons.tsx",
+      "^@expo/vector-icons/(.*)$": "<rootDir>/src/__mocks__/@expo/vector-icons.tsx"
     }
   },
   "dependencies": {
