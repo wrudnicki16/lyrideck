@@ -63,6 +63,15 @@ export default function CardQueueScreen({ route, navigation }: any) {
       Alert.alert('No cards', 'There are no cards with the current filters.');
       return;
     }
+    const manualCount = displayedCards.filter((c) => c.manual_entry_id).length;
+    const eligibleCount = displayedCards.length - manualCount;
+    if (eligibleCount === 0) {
+      Alert.alert(
+        'No Spotify cards',
+        'All displayed cards are manual entries. Spotify playlists require Spotify tracks.'
+      );
+      return;
+    }
     setShowPlaylistModal(true);
   };
 
@@ -81,6 +90,7 @@ export default function CardQueueScreen({ route, navigation }: any) {
       back: c.back,
       status: c.status,
       searchText: searchField === 'front' ? c.front : c.back,
+      hasManualEntry: !!c.manual_entry_id,
     }));
     navigation.navigate('PlaylistProgress', {
       playlistName: playlistName.trim(),
@@ -308,13 +318,26 @@ export default function CardQueueScreen({ route, navigation }: any) {
         onConfirm={handleConfirmPlaylist}
         confirmLabel="Continue"
       >
-        <Text style={styles.modalBody}>
-          Create a Spotify playlist from {displayedCards.length} card
-          {displayedCards.length !== 1 ? 's' : ''}?
-        </Text>
-        <Text style={styles.modalHint}>
-          Adjust your filters to change which songs are included.
-        </Text>
+        {(() => {
+          const manualCount = displayedCards.filter((c) => c.manual_entry_id).length;
+          const eligibleCount = displayedCards.length - manualCount;
+          return (
+            <>
+              <Text style={styles.modalBody}>
+                Create a Spotify playlist from {eligibleCount} card
+                {eligibleCount !== 1 ? 's' : ''}?
+              </Text>
+              {manualCount > 0 && (
+                <Text style={styles.modalWarning}>
+                  {manualCount} manual entr{manualCount !== 1 ? 'ies' : 'y'} will be skipped (not on Spotify).
+                </Text>
+              )}
+              <Text style={styles.modalHint}>
+                Adjust your filters to change which songs are included.
+              </Text>
+            </>
+          );
+        })()}
       </ConfirmationModal>
 
       <ConfirmationModal
@@ -495,6 +518,11 @@ const styles = StyleSheet.create({
   modalBody: {
     color: colors.textSecondary,
     fontSize: 15,
+    marginBottom: 8,
+  },
+  modalWarning: {
+    color: colors.warning,
+    fontSize: 13,
     marginBottom: 8,
   },
   modalHint: {

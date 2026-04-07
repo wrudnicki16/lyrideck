@@ -59,6 +59,14 @@ export default function PlaylistProgressScreen({
     for (let i = 0; i < cards.length; i++) {
       if (cancelledRef.current) return;
       const card = cards[i];
+
+      if (card.hasManualEntry) {
+        skippedCount++;
+        setProgress(i + 1);
+        setSkipped(skippedCount);
+        continue;
+      }
+
       let uri: string | null = null;
 
       if (card.status === 'matched') {
