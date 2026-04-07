@@ -346,10 +346,10 @@ All testing is via Maestro flows in `.maestro/`. No unit tests (no Jest setup in
 
 ```bash
 manual-entry)         echo "|manual-entry-no-spotify,manual-entry-edit" ;;
-manual-entry-spotify) echo "spotify-auth|manual-entry-with-spotify" ;;
+manual-entry-spotify) echo "|manual-entry-with-spotify" ;;
 ```
 
-Both added to `ALL_GROUPS`.
+Both added to `ALL_GROUPS`. The Spotify variant has no setup flow — it relies on Spotify auth persisting across launches from a prior session (the same pattern used by `playlist-creation.yaml`, `match-cards-flow.yaml`, etc.).
 
 ### What's NOT tested
 
