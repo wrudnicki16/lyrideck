@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -58,6 +58,32 @@ export default function SongCandidatesScreen({
     };
     init();
   }, [accessToken, cardId]);
+
+  useEffect(() => {
+    if (!accessToken) {
+      setManualMode(true);
+    }
+  }, [accessToken]);
+
+  useLayoutEffect(() => {
+    if (manualMode && accessToken) {
+      navigation.setOptions({
+        headerRight: () => (
+          <Pressable
+            onPress={() => setManualMode(false)}
+            accessibilityLabel="Search Spotify"
+            accessibilityRole="button"
+            testID="header-spotify-btn"
+            style={styles.headerBtn}
+          >
+            <Text style={styles.headerBtnText}>Spotify</Text>
+          </Pressable>
+        ),
+      });
+    } else {
+      navigation.setOptions({ headerRight: undefined });
+    }
+  }, [manualMode, accessToken, navigation]);
 
   const reviewParams = reviewMode
     ? { reviewMode: true, deckId, lyricsOnly }
@@ -286,6 +312,15 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontSize: 13,
     fontWeight: '600',
+  },
+  headerBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  headerBtnText: {
+    color: colors.primary,
+    fontSize: 15,
+    fontWeight: '700',
   },
   noResults: {
     color: colors.textMuted,
