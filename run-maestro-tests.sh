@@ -65,16 +65,16 @@ format_duration() {
 group_def() {
   case "$1" in
     fresh-app)    echo "|import-csv-deck,import-apkg-deck,spotify-auth" ;;
-    navigation)   echo "import-deck|card-queue-navigation,filter-pills,search-field-toggle,export-empty,playlist-cancel" ;;
-    capture)      echo "import-deck|select-track-for-card,mark-at-zero,manual-timestamp-capture,search-different-track,manage-clips" ;;
-    match)        echo "import-deck|match-cards-flow" ;;
-    skip)         echo "import-deck|skip-card-review" ;;
-    playlist)     echo "import-deck,match-cards|create-playlist,playlist-with-filters,export-csv" ;;
-    destructive)  echo "import-deck|delete-deck" ;;
-    now-playing)  echo "import-deck,play-spotify-track|now-playing-flow,now-playing-controls,now-playing-from-deck,now-playing-card-match,now-playing-fallback-search" ;;
-    now-playing-no-music) echo "import-deck|now-playing-no-playback" ;;
-    filters)      echo "import-deck|saved-filters" ;;
-    playlist-new) echo "import-deck|playlist-creation" ;;
+    navigation)   echo "|card-queue-navigation,filter-pills,search-field-toggle,export-empty,playlist-cancel" ;;
+    capture)      echo "|select-track-for-card,mark-at-zero,manual-timestamp-capture,search-different-track,manage-clips" ;;
+    match)        echo "|match-cards-flow" ;;
+    skip)         echo "|skip-card-review" ;;
+    playlist)     echo "match-cards|create-playlist,playlist-with-filters,export-csv" ;;
+    destructive)  echo "|delete-deck" ;;
+    now-playing)  echo "play-spotify-track|now-playing-flow,now-playing-controls,now-playing-from-deck,now-playing-card-match,now-playing-fallback-search" ;;
+    now-playing-no-music) echo "|now-playing-no-playback" ;;
+    filters)      echo "|saved-filters" ;;
+    playlist-new) echo "|playlist-creation" ;;
     manual-create) echo "|create-deck-manual,add-card-manual" ;;
     sample-deck)  echo "|sample-deck-seeded" ;;
     manual-entry)         echo "|manual-entry-no-spotify,manual-entry-edit" ;;

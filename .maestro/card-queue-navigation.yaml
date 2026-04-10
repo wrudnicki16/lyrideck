@@ -8,6 +8,15 @@ appId: host.exp.exponent
     timeout: 30000
 - openLink: "${EXPO_URL}"
 
+# Dismiss Expo Go developer menu
+- extendedWaitUntil:
+    visible: "Continue"
+    timeout: 5000
+    optional: true
+- tapOn:
+    point: "90%,35%"
+    optional: true
+
 - assertVisible: "Your Decks"
 
 # Tap the first deck to navigate to CardQueueScreen

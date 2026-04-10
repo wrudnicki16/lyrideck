@@ -17,6 +17,15 @@ appId: host.exp.exponent
     point: "50%,79%"
     optional: true
 
+# Dismiss Expo Go developer menu
+- extendedWaitUntil:
+    visible: "Continue"
+    timeout: 5000
+    optional: true
+- tapOn:
+    point: "90%,35%"
+    optional: true
+
 # Navigate to first deck
 - tapOn:
     id: "deck-item"

@@ -19,6 +19,15 @@ appId: host.exp.exponent
     point: "50%,79%"
     optional: true
 
+# Dismiss Expo Go developer menu
+- extendedWaitUntil:
+    visible: "Continue"
+    timeout: 5000
+    optional: true
+- tapOn:
+    point: "90%,35%"
+    optional: true
+
 - assertVisible: "LyriDeck"
 
 # Tap Now Playing from home screen
