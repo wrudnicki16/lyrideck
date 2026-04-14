@@ -64,19 +64,19 @@ format_duration() {
 # Returns "setup|test1,test2,..." for a group name
 group_def() {
   case "$1" in
-    fresh-app)    echo "import-csv-deck,import-apkg-deck,spotify-auth,sample-deck-seeded" ;;
-    navigation)   echo "card-queue-navigation,filter-pills,search-field-toggle,export-empty,playlist-cancel" ;;
-    capture)      echo "select-track-for-card,mark-at-zero,manual-timestamp-capture,search-different-track,manage-clips" ;;
-    match)        echo "match-cards-flow" ;;
-    skip)         echo "skip-card-review" ;;
+    fresh-app)    echo "|import-csv-deck,import-apkg-deck,spotify-auth,sample-deck-seeded" ;;
+    navigation)   echo "|card-queue-navigation,filter-pills,search-field-toggle,export-empty,playlist-cancel" ;;
+    capture)      echo "|select-track-for-card,mark-at-zero,manual-timestamp-capture,search-different-track,manage-clips" ;;
+    match)        echo "|match-cards-flow" ;;
+    skip)         echo "|skip-card-review" ;;
     playlist)     echo "match-cards|create-playlist,playlist-with-filters,export-csv" ;;
-    destructive)  echo "delete-deck" ;;
-    filters)      echo "saved-filters" ;;
-    manual-create) echo "create-deck-manual,add-card-manual" ;;
-    manual-entry)         echo "manual-entry-no-spotify,manual-entry-edit" ;;
-    manual-entry-spotify) echo "manual-entry-with-spotify,manual-entry-cancel,manual-entry-spotify-header,manual-entry-switch-to-spotify" ;;
-    playlist-new) echo "playlist-creation" ;;
-    now-playing-no-music) echo "now-playing-no-playback" ;;
+    destructive)  echo "|delete-deck" ;;
+    filters)      echo "|saved-filters" ;;
+    manual-create) echo "|create-deck-manual,add-card-manual" ;;
+    manual-entry)         echo "|manual-entry-no-spotify,manual-entry-edit" ;;
+    manual-entry-spotify) echo "|manual-entry-with-spotify,manual-entry-cancel,manual-entry-spotify-header,manual-entry-switch-to-spotify" ;;
+    playlist-new) echo "|playlist-creation" ;;
+    now-playing-no-music) echo "|now-playing-no-playback" ;;
     now-playing)  echo "play-spotify-track|now-playing-flow,now-playing-controls,now-playing-from-deck,now-playing-card-match,now-playing-fallback-search" ;;
     *) return 1 ;;
   esac
