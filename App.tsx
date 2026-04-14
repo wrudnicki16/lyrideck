@@ -38,6 +38,14 @@ Sentry.init({
   enableNdk: true,
 
   environment: __DEV__ ? 'development' : 'production',
+
+  // Redact sensitive data from error reports
+  beforeSend(event) {
+    if (event.request?.headers) {
+      delete event.request.headers['Authorization'];
+    }
+    return event;
+  },
 });
 
 function ErrorFallback() {
