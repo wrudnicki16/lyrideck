@@ -64,7 +64,7 @@ format_duration() {
 # Returns "setup|test1,test2,..." for a group name
 group_def() {
   case "$1" in
-    fresh-app)    echo "|import-csv-deck,import-apkg-deck,spotify-auth,sample-deck-seeded" ;;
+    fresh-app)    echo "|import-csv-deck,import-apkg-deck,spotify-auth" ;;
     navigation)   echo "|card-queue-navigation,filter-pills,search-field-toggle,export-empty,playlist-cancel" ;;
     capture)      echo "|select-track-for-card,mark-at-zero,manual-timestamp-capture,search-different-track,manage-clips" ;;
     match)        echo "|match-cards-flow" ;;
@@ -72,6 +72,7 @@ group_def() {
     playlist)     echo "match-cards|create-playlist,playlist-with-filters,export-csv" ;;
     destructive)  echo "|delete-deck" ;;
     filters)      echo "|saved-filters" ;;
+    sample-deck)  echo "|sample-deck-seeded" ;;
     manual-create) echo "|create-deck-manual,add-card-manual" ;;
     manual-entry)         echo "|manual-entry-no-spotify,manual-entry-edit" ;;
     manual-entry-spotify) echo "|manual-entry-with-spotify,manual-entry-cancel,manual-entry-spotify-header,manual-entry-switch-to-spotify" ;;
