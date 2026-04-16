@@ -83,7 +83,7 @@ group_def() {
   esac
 }
 
-ALL_GROUPS="fresh-app navigation capture match skip playlist destructive now-playing now-playing-no-music filters playlist-new manual-create sample-deck manual-entry manual-entry-spotify"
+ALL_GROUPS="fresh-app navigation capture match skip playlist destructive filters sample-deck manual-create manual-entry manual-entry-spotify playlist-new now-playing-no-music now-playing"
 
 # ── Helpers ──
 
